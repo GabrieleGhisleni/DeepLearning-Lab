@@ -59,3 +59,24 @@ There are several feature scaling methods which are listed as follows:
 - **Min-Max Normalization** (Rescaling): It scales the values of each feature between [0, 1] and [-1, 1].
 - **Mean Normalization**: It deducts the mean from each data point and divides the result to max-min differential. It is a slightly altered and less popular version of min-max normalization.
 - **Scaling to Unit Length**: It divides each component of a feature by the Euclidian length of the vector of this feature
+
+
+# FeedForward Neural Networks
+
+Feedforward neural networks are a group of artificial neural networks in which the connections between neurons 
+do not form a cycle. Connections between neurons are unidirectional and move in only forward direction from input layer through hidden layers and to output later. In other words, the reason these networks are called feedforward is that the flow of information takes place in the forward direction.
+
+Feedforward neural networks are mainly used for supervised learning tasks.**They are especially useful in analytical applications and quantitative studies** where traditional machine learning algorithms are also used. Since deep feedforward neural networks can approximate any linear or nonlinear function, they are widely used in real-world pplications, both for classification and regression problems.
+
+
+## Layers
+Our generic feedforward neural network architecture consists of three types of layers:
+- An input layer
+- An output layer
+- A number of hidden layers
+
+Input layer is the very first layer of feedforward neural network, which is used to feed data into the network. Input layer does not utilize an activation function and its sole purpose to get the data into the system. *The number of neurons in an input layer must be equal to the number of features* (i.e., explanatory variables) fed into the system. For nstance, if we are using five different explanatory variables to predict one response variable, our model’s input layer must have five neurons.
+
+Output layer is the very last layer of the feedforward neural network, which is used to output the prediction. The number of neurons in the output layer is decided based on the nature of the problem.
+
+Hidden layers are created to ensure the approximation of the nonlinear functions. We can add as many hidden layers as we desire, and the number of neurons at each layer can be changed.
