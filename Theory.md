@@ -80,3 +80,36 @@ Input layer is the very first layer of feedforward neural network, which is used
 Output layer is the very last layer of the feedforward neural network, which is used to output the prediction. The number of neurons in the output layer is decided based on the nature of the problem.
 
 Hidden layers are created to ensure the approximation of the nonlinear functions. We can add as many hidden layers as we desire, and the number of neurons at each layer can be changed.
+
+# Convolutional Neural Networks
+
+CNN is a class of deep learning networks, mostly applied to image data. However, CNN structures can be used in a variety of real-world problems. CNNs achieve a high level of accuracy by assembling complex patterns using the more basic patterns found in the training data. For instance, from lines to an eyebrow, from two eyebrows to a human face, and then to a full human figure, CNNs can correctly detect humans in an image by using mere lines. I will usually refer to image data to exemplify the CNN concepts. But, please note that these examples are still relevant for different types of data such as audio waves or stock prices.
+
+Usually, in a CNN architecture, there are several convolutional layers and pooling layers at the beginning, which are mainly used to simplify the image data complexity and reduce their sizes. In addition, they are very useful to extract complex patterns from the basic patterns observed in images. After using several convolutional and pooling layers (supported with activation functions), we reshape our data from two-dimensional or three-dimensional arrays into a one-dimensional array with a Flatten layer. After the flatten layer, a set of fully connected layers take the flattened one dimensional array as input and complete the classification or regression task. 
+
+## Convolutional Layers
+
+A convolutional layer is the very first layer where we extract features from the images in our datasets. Since pixels are only related to the adjacent and other close pixels, convolution allows us to preserve the relationship 
+between different parts of an image. The task of a convolutional layer merely is filtering the image with a smaller pixel filter to decrease the size of the image without losing the relationship between pixels. 
+
+<img src='./images/convnet.PNG'>
+
+## Filtering 
+Filtering is performed by multiplying each value in a part of the image data with the corresponding filter value.
+
+### Strides
+
+Stride is a parameter to set how many pixels will the filter shift after each operation. For the example earlier
+- If we select a 1 x 1 pixel stride, we end up shifting the filter 9 times to process all the data. 
+- If we select a 2 x 2 pixel stride, we can process the entire 5 x 5 pixel image in 4 filter operations.
+Using a large stride value would decrease the number of filter calculations.
+
+## Pooling Layer
+
+When constructing CNNs, it is almost standard practice to insert pooling layers after each convolutional layer to reduce the spatial size of the representation to reduce the parameter counts, which reduces the computational complexity. For pooling operation, we select a pooling size to reduce the amount of the parameters by selecting the maximum, or average.
+
+<img src='./images/maxpooling.PNG'>
+
+## Final Fully Connected Layers
+
+Since our time-space complexity is vastly reduced thanks to convolution and pooling layers, we can construct a fully connected network at the end of our CNN to classify our images. 
