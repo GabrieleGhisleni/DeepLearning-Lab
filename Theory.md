@@ -113,3 +113,43 @@ When constructing CNNs, it is almost standard practice to insert pooling layers 
 ## Final Fully Connected Layers
 
 Since our time-space complexity is vastly reduced thanks to convolution and pooling layers, we can construct a fully connected network at the end of our CNN to classify our images. 
+
+# Recurrent Neural Network
+
+RNNs are extremely useful for sequence data. If you are familiar with predictive analytics, you might know that forecasting with time-series data requires different methods compared to cross-sectional data. Time-series data refers to a set of observations recorded over a given period of time at equally spaced time intervals. In time-series datasets, observations are recorded based on a timestamp, but this cannot be generalized to sequence data. Sequence data refers to a broader term. **Sequence data is any data where the order of observations matters**. 
+
+<img src='./_images/rnn.PNG'>
+
+RNNs make use of previous information by keeping them in memory, which is saved as “state” within an RNN neuron.
+Before diving into the internal structure of LSTMs and GRUs, let’s understand the memory structure with a basic weather forecasting example. 
+
+<img src='./_images/rnnexample.PNG'>
+
+
+As mentioned earlier, there are many different variants of RNNs. In this section, we will cover three RNN types we encounter often:
+
+- Simple (Simple) RNN
+- Long short-term memory (LSTM) networks
+- Gated recurrent unit (GRU) networks
+
+<img src='./_images/GRU.PNG'>
+
+all these three alternatives have common RNN characteristics:
+- **They all take a t-1 state** (memory) into the calculation as a representation of the previous values.
+- **They all apply some sort of activation functions** and do matrix operations.
+- **They all calculate a current state at time t**.
+- They repeat this process to perfect their weights and bias values.
+
+
+In a simple RNN cell, there are two inputs: (i) the state from the previous time step (t-1) and (ii) the observation at the time t. After an activation function (usually Tanh), the output is passed as the state at the 
+time t to the next cell. Therefore, the effect of the previous information is passed to the next cell at each step.
+
+## Long Short-Term Memory (LSTM)
+
+An LSTM unit consists of a cell state, an input gate, an output gate, and a forget gate. These three gates regulate the flow of information into and out of the LSTM unit. In addition, LSTM units have both a cell state and a hidden state.
+
+<img src='./_images/LSTM.PNG'>
+
+## Gated Recurrent Units (GRUs)
+
+to simplify the calculation process, GRUs use two gates: (i) reset gate and (ii) update gate. GRUs also use the same values for hidden state and cell state.
