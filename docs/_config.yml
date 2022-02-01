@@ -1,0 +1,23 @@
+title: "Home"
+description: Machine Learning Notes and notebook
+url: "" # the base hostname & protocol for your site, e.g. http://example.com
+permalink: ':title/'
+baseurl: "/DeepLearning-Lab" # the subpath of your site, e.g. /blog
+url: "https://gabrieleghisleni.github.io" 
+
+# # Comments
+# discus_identifier: mr-brown
+# txtpen_identifier: raizer85
+
+# Social settings
+author: Gabriele Ghisleni
+portfolio_url: https://gabrieleghisleni.github.io/GG-website/#/home
+email: gabriele.ghisleni01@gmail.com
+linkedin_url: https://www.linkedin.com/in/gabriele-ghisleni-bb553a199/
+github_url: https://github.com/GabrieleGhisleni
+
+defaults:
+  - scope:
+      path: "assets/images"
+    values:
+      image: true
