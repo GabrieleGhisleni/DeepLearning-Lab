@@ -1,3 +1,12 @@
+---
+layout: post
+title:  "Shrinkage methods and non-linear models"
+date:   2017-02-23
+description: Shrinkage methods and non-linear models and analysis developed in R studio.
+img: smart.jpg
+author: GGabry
+---
+
 Shrinkage Methods, Trees and Forests
 ================
 Ghisleni Gabriele
@@ -86,7 +95,8 @@ ggcorrplot(cov_matrix, method="square", type="lower", title="Correlation plot\n"
            ggtheme=theme_tufte(), show.diag=F)
 ```
 
-![](README_figs/README-unnamed-chunk-5-1.png)<!-- -->
+
+![]({{site.baseurl}}/assets/images/README_figs/shrinkage-models/README-unnamed-chunk-5-1.png)<!-- -->
 
 We removed the diagonal so to remove redundant information We start
 analyzing the variables that seems more correlated to our y. I arbitrary
@@ -135,7 +145,7 @@ g6 <- ggplot(data=data, aes(y=y))+
 grid.arrange(g1,g2,g3,g4,g5,g6, top=textGrob("Y ~ Most correlated variables\n"))
 ```
 
-![](README_figs/README-unnamed-chunk-7-1.png)<!-- -->
+![]({{site.baseurl}}/assets/images/README_figs/shrinkage-models/README-unnamed-chunk-7-1.png)<!-- -->
 
 As shown in the plot above we can see that we have two variabiles
 perfectly correlated with the target variable: ‘siri’ and ‘density’ have
@@ -168,7 +178,7 @@ grid.arrange(g1,g2,g3,g4,g5,g6,
              top=textGrob("Histogram distribution of the most important variable\n"))
 ```
 
-![](README_figs/README-unnamed-chunk-8-1.png)<!-- -->
+![]({{site.baseurl}}/assets/images/README_figs/shrinkage-models/README-unnamed-chunk-8-1.png)<!-- -->
 
 We can see that the distributions are almost standard, but seems that
 there are some outliers in each of these features. So before conclude
@@ -193,7 +203,7 @@ grid.arrange(g1,g2,g3,g4,g5,g6,
              top=textGrob("BoxPlot of the most importance variables\n"))
 ```
 
-![](README_figs/README-unnamed-chunk-9-1.png)<!-- -->
+![]({{site.baseurl}}/assets/images/README_figs/shrinkage-models/README-unnamed-chunk-9-1.png)<!-- -->
 
 From here we can see that there are many outliers in particular in the
 variable thigh, chest, abdomen and hip. Let’s also analyze our target
@@ -219,7 +229,7 @@ g2 <- ggplot(data=data, aes(x=y, y=..density..))+
 grid.arrange(g1,g2, nrow=1, top=textGrob("Body fat\n"))
 ```
 
-![](README_figs/README-unnamed-chunk-10-1.png)<!-- -->
+![]({{site.baseurl}}/assets/images/README_figs/shrinkage-models/README-unnamed-chunk-10-1.png)<!-- -->
 
 Now that we have a rough idea of our data, we can start perform data
 analysis.
@@ -344,7 +354,7 @@ ridge_regression <- glmnet(train_mat_x, train_y, alpha=0, lambda=lambdas)
 plot(ridge_regression)
 ```
 
-![](README_figs/README-unnamed-chunk-15-1.png)<!-- --> From this plot is
+![]({{site.baseurl}}/assets/images/README_figs/shrinkage-models/README-unnamed-chunk-15-1.png)<!-- --> From this plot is
 clear that there are two variables that impact a lot the performance of
 the model, most probably the ones that were highly correlated: ‘siri’
 and ‘density’.
@@ -364,7 +374,7 @@ used into the model).
 plot(ridge_regression)
 ```
 
-![](README_figs/README-unnamed-chunk-17-1.png)<!-- -->
+![]({{site.baseurl}}/assets/images/README_figs/shrinkage-models/README-unnamed-chunk-17-1.png)<!-- -->
 
 From the plot above we can see that the optimal lambda is very low, also
 the confidence interval in small. we also notice as before that the MSE
@@ -460,7 +470,7 @@ lasso_regression <- glmnet(train_mat_x, train_y, alpha=1, lambda=lambdas)
 plot(lasso_regression)
 ```
 
-![](README_figs/README-unnamed-chunk-22-1.png)<!-- -->
+![]({{site.baseurl}}/assets/images/README_figs/shrinkage-models/README-unnamed-chunk-22-1.png)<!-- -->
 
 There are almost all zero except for once, which is very bad. basically
 the model use just one variable to make the prediction, which most
@@ -481,7 +491,7 @@ coeff_lasso<- predict(lasso_regression, type="coefficients", s=lambdas)
 plot(lasso_regression)
 ```
 
-![](README_figs/README-unnamed-chunk-24-1.png)<!-- --> Different from
+![]({{site.baseurl}}/assets/images/README_figs/shrinkage-models/README-unnamed-chunk-24-1.png)<!-- --> Different from
 before in top of the plot we have the number of variables different from
 zero used in the lasso regression. When lambda increase, in this case
 when lambda is greater than exp(4) all the variables are dropped out
@@ -626,7 +636,7 @@ ridge_regression <-glmnet(train_mat_x, train_y, alpha=0, lambda=lambdas)
 plot(ridge_regression)
 ```
 
-![](README_figs/README-unnamed-chunk-29-1.png)<!-- -->
+![]({{site.baseurl}}/assets/images/README_figs/shrinkage-models/README-unnamed-chunk-29-1.png)<!-- -->
 
 Now the variables that are not pushed down to almost zero are more and,
 expect for one, have a similar weight.
@@ -640,7 +650,7 @@ opti_lambda_ridge <- ridge_regression$lambda.min
 plot(ridge_regression)
 ```
 
-![](README_figs/README-unnamed-chunk-30-1.png)<!-- -->
+![]({{site.baseurl}}/assets/images/README_figs/shrinkage-models/README-unnamed-chunk-30-1.png)<!-- -->
 
 We can see now that the results are quiet different than before, the
 confidence interval is larger. let’s go on and see others detail of this
@@ -719,7 +729,7 @@ lasso_regression <-glmnet(train_mat_x, train_y, alpha=1, lambda=lambdas)
 plot(lasso_regression)
 ```
 
-![](README_figs/README-unnamed-chunk-34-1.png)<!-- --> Seems that there
+![]({{site.baseurl}}/assets/images/README_figs/shrinkage-models/README-unnamed-chunk-34-1.png)<!-- --> Seems that there
 is again one variable which is stronger than the others but overall is
 fine because the others are not all zero.
 
@@ -732,7 +742,7 @@ opti_lambda_lasso <- lasso_regression$lambda.min
 plot(lasso_regression)
 ```
 
-![](README_figs/README-unnamed-chunk-35-1.png)<!-- -->
+![]({{site.baseurl}}/assets/images/README_figs/shrinkage-models/README-unnamed-chunk-35-1.png)<!-- -->
 
 We can see now that the results are quiet different than before, the
 number of variables suggested to the optimal lasso regression are
@@ -833,7 +843,7 @@ ggplot(data=df_tot, aes(y=MSE, x=reorder(Regression, -MSE), fill=Regression))+
   ggtitle("MSE of the differents model")+ xlab("")
 ```
 
-![](README_figs/README-unnamed-chunk-40-1.png)<!-- -->
+![]({{site.baseurl}}/assets/images/README_figs/shrinkage-models/README-unnamed-chunk-40-1.png)<!-- -->
 
 > > ## Exercise 2
 > >
@@ -938,7 +948,7 @@ fancyRpartPlot(rpart(Tree1),yesno=0,split.col="black",nn.col="black",
                caption="",palette="Paired",branch.col="black")
 ```
 
-![](README_figs/README-unnamed-chunk-44-1.png)<!-- -->
+![]({{site.baseurl}}/assets/images/README_figs/shrinkage-models/README-unnamed-chunk-44-1.png)<!-- -->
 
 > ### 3. Chose the good trade off complexity - bias
 
@@ -991,7 +1001,7 @@ g2 <- ggplot(data=tmp, aes(y=Dev, x=Size))+
 grid.arrange(g1,g2, nrow=2)
 ```
 
-![](README_figs/README-unnamed-chunk-46-1.png)<!-- -->
+![]({{site.baseurl}}/assets/images/README_figs/shrinkage-models/README-unnamed-chunk-46-1.png)<!-- -->
 
 Now from the cross-validation we look at the tree size (number of
 terminal nodes) having the lowest deviance, prune the first tree that we
@@ -1038,7 +1048,7 @@ plot(pruned_Tree1)
 text(pruned_Tree1)
 ```
 
-![](README_figs/README-unnamed-chunk-49-1.png)<!-- -->
+![]({{site.baseurl}}/assets/images/README_figs/shrinkage-models/README-unnamed-chunk-49-1.png)<!-- -->
 
 We can see that the most important variables used as criterion to spilt
 the tree are: CRuns, Hits, CHmRun.
@@ -1135,7 +1145,7 @@ ggplot(data=check_perfomance, aes(x=M))+
   theme(legend.position = "top")
 ```
 
-![](README_figs/README-unnamed-chunk-53-1.png)<!-- -->
+![]({{site.baseurl}}/assets/images/README_figs/shrinkage-models/README-unnamed-chunk-53-1.png)<!-- -->
 
 Hard to define the good choice of M. We see that reached m=5 the test
 error is quiet regular while the training error also remains almost
@@ -1200,7 +1210,7 @@ library(dplyr)
 important_feature_plot <- as.data.frame(varImpPlot(forest))
 ```
 
-![](README_figs/README-unnamed-chunk-56-1.png)<!-- -->
+![]({{site.baseurl}}/assets/images/README_figs/shrinkage-models/README-unnamed-chunk-56-1.png)<!-- -->
 
 ``` r
 important_feature_plot$varnames <- rownames(important_feature_plot)
@@ -1218,7 +1228,7 @@ ggplot(important_feature_plot, aes(x=reorder(varnames, IncNodePurity),
   ggtitle("Importance in terms of NodePurity\n")
 ```
 
-![](README_figs/README-unnamed-chunk-57-1.png)<!-- -->
+![]({{site.baseurl}}/assets/images/README_figs/shrinkage-models/README-unnamed-chunk-57-1.png)<!-- -->
 
 > ### 6. Fit a regression tree on the training data using boosting. Find the optimal number of boosting iterations, both by evaluating the OOB error and the cross-validation error. Produce plots with OOB error and CV error against the number of iterations: are the two methods leading to the same choice of the optimal number of iterations? Reach a conclusion about the optimal model, evaluate the test MSE of this model and produce a partial dependence plot of the resulting top N variables (N of your choice).
 
@@ -1239,7 +1249,7 @@ interaction.depth represent exactly the maximum number of nodes allowed.
 x<- summary(forest_boosted)
 ```
 
-![](README_figs/README-unnamed-chunk-59-1.png)<!-- -->
+![]({{site.baseurl}}/assets/images/README_figs/shrinkage-models/README-unnamed-chunk-59-1.png)<!-- -->
 
 bag.fraction from documentation: the fraction of the training set
 observations randomly selected to propose the next tree in the
@@ -1274,7 +1284,7 @@ Let’s see the results of our analysis:
 gbm::gbm.perf(bosted_tmp, method="OOB")
 ```
 
-![](README_figs/README-unnamed-chunk-61-1.png)<!-- -->
+![]({{site.baseurl}}/assets/images/README_figs/shrinkage-models/README-unnamed-chunk-61-1.png)<!-- -->
 
     ## [1] 20
     ## attr(,"smoother")
@@ -1331,7 +1341,7 @@ ggplot(data=tmpdf, aes(x=Iteration))+
                                       caption=paste("Number of tree =",noftrees))
 ```
 
-![](README_figs/README-unnamed-chunk-63-1.png)<!-- --> The methods seems
+![]({{site.baseurl}}/assets/images/README_figs/shrinkage-models/README-unnamed-chunk-63-1.png)<!-- --> The methods seems
 that leads a different choice of the number of iteration. the cross
 validation set seem very irregular and seems that it does not converge
 in any case while the OOB seems that start converge around 11 iteration.
@@ -1370,7 +1380,7 @@ plots4 <- plot(Optimized, i=most_important_f[4], main=most_important_f[4])
 grid.arrange(plots1,plots2,plots3,plots4)
 ```
 
-![](README_figs/README-unnamed-chunk-66-1.png)<!-- -->
+![]({{site.baseurl}}/assets/images/README_figs/shrinkage-models/README-unnamed-chunk-66-1.png)<!-- -->
 
 > #### 7. Draw some general conclusions about the analysis and the different methods that you considered
 
@@ -1408,4 +1418,4 @@ ggplot(data=final, aes(y=MSE, x=reorder(Model, -MSE), fill=Model))+
   ggtitle("MSE of the differents model")+ xlab("")
 ```
 
-![](README_figs/README-unnamed-chunk-68-1.png)<!-- -->
+![]({{site.baseurl}}/assets/images/README_figs/shrinkage-models/README-unnamed-chunk-68-1.png)<!-- -->
