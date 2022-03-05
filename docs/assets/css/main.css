@@ -982,7 +982,7 @@ blockquote {
       padding-left: 0.6rem; }
 
 .page-container {
-  max-width: 1200px;
+  max-width: 1600px;
   margin: 0 auto;
   position: relative;
   background-color: #fff;
@@ -1033,10 +1033,16 @@ blockquote {
 @media screen and (min-width: 500px) {
   html {
     font-size: calc(15px + 5 * ((100vw - 500px) / 900)); } }
+
 @media screen and (min-width: 1400px) {
   html {
     font-size: 20px; } }
-.jp-RenderedHTMLCommon {
-  font-size: 1.25rem !important; }
 
-/*# sourceMappingURL=main.css.map */
+.jp-RenderedHTMLCommon {
+  font-size: 1.05rem !important; }
+
+.jp-RenderedText pre {
+  font-size: 0.95rem !important; }
+
+.jp-RenderedHTMLCommon table {
+  font-size: 1.05rem !important; }
