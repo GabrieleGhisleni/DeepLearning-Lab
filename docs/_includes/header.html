@@ -1,0 +1,27 @@
+<header class="site-header">
+  <div class="header-content">
+
+    <div class="logo">
+      <a href="{{site.baseurl}}/" class="logo-link">
+        {% if page.url != "/" %}
+        <i 
+        id="left-button"
+        class='fas fa-arrow-alt-circle-left' 
+        style='font-size:42px; position: absolute;left:15px; top:40px'></i>
+
+        Machine
+        <img style="vertical-align: sub" src="{{site.baseurl}}/assets/images/favicon.ico" height="75px" />
+        Learning
+
+        {% else %}
+        Machine
+        <img style="vertical-align: sub" src="{{site.baseurl}}/assets/images/favicon.ico" height="75px" />
+        Learning
+
+        {% endif %}
+
+       </a>
+
+    </div>
+  </div>
+</header>

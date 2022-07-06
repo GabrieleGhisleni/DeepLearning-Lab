@@ -1,0 +1,980 @@
+I"Z<ul id="markdown-toc">
+  <li><a href="#mlops" id="markdown-toc-mlops">MLOPS</a></li>
+  <li><a href="#week-1" id="markdown-toc-week-1">Week 1</a>    <ul>
+      <li><a href="#ml-project-lifecycle" id="markdown-toc-ml-project-lifecycle">ML Project Lifecycle</a>        <ul>
+          <li><a href="#steps-of-ml-project" id="markdown-toc-steps-of-ml-project">Steps of ML project</a></li>
+          <li><a href="#speech-recognition-example" id="markdown-toc-speech-recognition-example">Speech recognition example</a></li>
+        </ul>
+      </li>
+      <li><a href="#key-challenges" id="markdown-toc-key-challenges">Key challenges</a>        <ul>
+          <li><a href="#concept-drift-and-data-drift" id="markdown-toc-concept-drift-and-data-drift">Concept drift and data drift</a></li>
+          <li><a href="#software-engineering-issues" id="markdown-toc-software-engineering-issues">Software engineering issues</a></li>
+        </ul>
+      </li>
+      <li><a href="#deployment-patterns" id="markdown-toc-deployment-patterns">Deployment patterns</a></li>
+      <li><a href="#monitoring-ml-system" id="markdown-toc-monitoring-ml-system">Monitoring ML system</a></li>
+      <li><a href="#pipeline-monitoring" id="markdown-toc-pipeline-monitoring">Pipeline Monitoring</a></li>
+    </ul>
+  </li>
+  <li><a href="#week-2" id="markdown-toc-week-2">Week 2</a>    <ul>
+      <li><a href="#selecting-and-training-a-model" id="markdown-toc-selecting-and-training-a-model">Selecting and training a Model</a>        <ul>
+          <li><a href="#establish-a-baseline" id="markdown-toc-establish-a-baseline">Establish a Baseline</a></li>
+          <li><a href="#tips-for-getting-started" id="markdown-toc-tips-for-getting-started">Tips for getting started</a></li>
+        </ul>
+      </li>
+      <li><a href="#error-analysis-and-performance-auditing" id="markdown-toc-error-analysis-and-performance-auditing">Error analysis and performance auditing</a>        <ul>
+          <li><a href="#prioritizing-what-to-work-on" id="markdown-toc-prioritizing-what-to-work-on">Prioritizing what to work on</a></li>
+          <li><a href="#skewed-datasets" id="markdown-toc-skewed-datasets">Skewed datasets</a>            <ul>
+              <li><a href="#f1-score" id="markdown-toc-f1-score">F1-Score</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><a href="#data-iteration" id="markdown-toc-data-iteration">Data iteration</a>        <ul>
+          <li><a href="#data-augmentation" id="markdown-toc-data-augmentation">Data Augmentation</a></li>
+          <li><a href="#data-iteration-loop" id="markdown-toc-data-iteration-loop">Data iteration loop</a></li>
+          <li><a href="#experiment-tracking" id="markdown-toc-experiment-tracking">Experiment tracking</a></li>
+        </ul>
+      </li>
+      <li><a href="#why-define-hard-is-hard" id="markdown-toc-why-define-hard-is-hard">Why define hard is hard?</a>        <ul>
+          <li><a href="#mayor-types-of-data-problems" id="markdown-toc-mayor-types-of-data-problems">Mayor types of data problems</a></li>
+          <li><a href="#how-to-improve-label-consistency" id="markdown-toc-how-to-improve-label-consistency">How to improve label consistency</a></li>
+        </ul>
+      </li>
+      <li><a href="#label-and-organize-data" id="markdown-toc-label-and-organize-data">Label and Organize data</a>        <ul>
+          <li><a href="#data-pipeline" id="markdown-toc-data-pipeline">Data Pipeline</a></li>
+          <li><a href="#balanced-traindevtest-splits-in-small-data-problems" id="markdown-toc-balanced-traindevtest-splits-in-small-data-problems">Balanced train/dev/test splits in small data problems</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#ml-data-lifecycle" id="markdown-toc-ml-data-lifecycle">ML Data Lifecycle</a>    <ul>
+      <li><a href="#ml-pipelines" id="markdown-toc-ml-pipelines">ML Pipelines</a></li>
+      <li><a href="#collecting-data" id="markdown-toc-collecting-data">Collecting data</a></li>
+      <li><a href="#degraded-model-performance" id="markdown-toc-degraded-model-performance">Degraded model performance</a></li>
+      <li><a href="#process-feedback-and-human-labelling" id="markdown-toc-process-feedback-and-human-labelling">Process feedback and human labelling</a></li>
+      <li><a href="#detecting-data-issue" id="markdown-toc-detecting-data-issue">Detecting data issue</a>        <ul>
+          <li><a href="#tensorflow-data-validation" id="markdown-toc-tensorflow-data-validation">TensorFlow Data Validation</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#feature-engineering" id="markdown-toc-feature-engineering">Feature engineering</a>    <ul>
+      <li><a href="#preprocessing-for-feature-engineering" id="markdown-toc-preprocessing-for-feature-engineering">Preprocessing for feature engineering</a>        <ul>
+          <li><a href="#techniques" id="markdown-toc-techniques">Techniques</a></li>
+        </ul>
+      </li>
+      <li><a href="#featuring-engineering-at-scale" id="markdown-toc-featuring-engineering-at-scale">Featuring engineering at scale</a>        <ul>
+          <li><a href="#tensorflow-transform" id="markdown-toc-tensorflow-transform">TensorFlow Transform</a></li>
+        </ul>
+      </li>
+      <li><a href="#feature-selection" id="markdown-toc-feature-selection">Feature selection</a></li>
+    </ul>
+  </li>
+  <li><a href="#data-journey-and-data-storage" id="markdown-toc-data-journey-and-data-storage">Data Journey and data storage</a>    <ul>
+      <li><a href="#artifacts-and-the-ml-pipelines" id="markdown-toc-artifacts-and-the-ml-pipelines">Artifacts and the ML pipelines</a></li>
+      <li><a href="#meta-data" id="markdown-toc-meta-data">Meta-data</a></li>
+      <li><a href="#advance-labelling" id="markdown-toc-advance-labelling">Advance labelling</a>        <ul>
+          <li><a href="#semi-supervise-learning" id="markdown-toc-semi-supervise-learning">Semi-supervise learning</a></li>
+          <li><a href="#active-learning" id="markdown-toc-active-learning">Active learning</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#ml-deployment" id="markdown-toc-ml-deployment">ML Deployment</a>    <ul>
+      <li><a href="#tensorflow-serving" id="markdown-toc-tensorflow-serving">TensorFlow serving</a></li>
+      <li><a href="#model-serving-architecture" id="markdown-toc-model-serving-architecture">Model serving architecture</a></li>
+      <li><a href="#scaling-infrastructure" id="markdown-toc-scaling-infrastructure">Scaling infrastructure</a></li>
+      <li><a href="#data-processing-and-inference" id="markdown-toc-data-processing-and-inference">Data Processing and Inference</a>        <ul>
+          <li><a href="#online-inference" id="markdown-toc-online-inference">Online inference</a></li>
+          <li><a href="#data-preprocessing" id="markdown-toc-data-preprocessing">Data preprocessing</a></li>
+        </ul>
+      </li>
+      <li><a href="#experiment-tracking-1" id="markdown-toc-experiment-tracking-1">Experiment Tracking</a></li>
+      <li><a href="#ml-solution-lifecycle" id="markdown-toc-ml-solution-lifecycle">ML Solution lifecycle</a>        <ul>
+          <li><a href="#mlops-level-0" id="markdown-toc-mlops-level-0">MLOPS level 0</a></li>
+          <li><a href="#mlops-level-1-2" id="markdown-toc-mlops-level-1-2">MLOPS level 1-2</a></li>
+          <li><a href="#ml-model-versioning" id="markdown-toc-ml-model-versioning">ML Model versioning</a></li>
+          <li><a href="#model-lineage" id="markdown-toc-model-lineage">Model Lineage</a></li>
+          <li><a href="#continous-delivery" id="markdown-toc-continous-delivery">Continous Delivery</a></li>
+          <li><a href="#monitoring-targets" id="markdown-toc-monitoring-targets">Monitoring Targets</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="mlops">MLOPS</h1>
+
+<p>MLOPS machine learning operation which is an emerging discipline, and comprises a set of tools and principles to supper progress trough the ML project lifecycle.</p>
+
+<h1 id="week-1">Week 1</h1>
+<h2 id="ml-project-lifecycle">ML Project Lifecycle</h2>
+<p>The model production involves more than only build the actual model. The amount of code required is much more rather than the needed for the model, called “POC to production GAP”. Beyond the ml learning we have many others components:</p>
+
+<ul>
+  <li>Data collection</li>
+  <li>Data verification</li>
+  <li>Feature extraction</li>
+  <li>ML CODE</li>
+  <li>Machine resource management</li>
+  <li>Analysis tools</li>
+  <li>Serving infrastructure</li>
+  <li>Monitoring</li>
+</ul>
+
+<p>all these pieces combined together create the ML infrastructure needed to deploy a ML production deployment.</p>
+
+<h3 id="steps-of-ml-project">Steps of ML project</h3>
+<p>the major steps are:</p>
+
+<ol>
+  <li><strong>Scoping</strong>: define project, what will be the X and the Y.</li>
+  <li><strong>Collecting &amp; Defining Data</strong>: define the data, labelling and organize them.</li>
+  <li><strong>Modelling</strong>: select and train the model and perform error analysis.</li>
+  <li><strong>Deployment</strong>: deploy in production and monitor and maintain the system.</li>
+</ol>
+
+<h3 id="speech-recognition-example">Speech recognition example</h3>
+<p>looking at the steps before the first step is to define the scope, one crucial decision is the <strong>key metrics</strong> used such as accuracy, latency, throughput. We have also to try estimating the resources and times.</p>
+
+<p>the second step regard the data, talking about speech recognition the first questions could be <em>“is the data labeled consistently?”</em>. spotting consistency standardizing the convention could improve a lot the results. other question regarding the data could involve <em>“how much silence before/after each clip?”</em>, how do you produce <em>volume normalization?</em>.</p>
+
+<p>then we have modelling in which we select and train a model, performing error analysis. in this phase we need to develop the code (model used, the hyperparameters used and the data. in product team usually we tend to change and try improve the hyperparameters and the data and keeping the algorithm fixed. in ML system turns out that is better to optimize the data and the hyperparameters rather than the model!</p>
+
+<p>the last deployment phases involve the first choice if we will use a <strong>prediction server</strong> into the cloud or a <strong>prediction system</strong> in the edge. we send an API to the server with the requests and returning the result. Even after the deployment we have to monitor and maintain the system. for instance if we train the speech recognition model only on adults it could be the case if the system will be used by children it won’t work.</p>
+
+<p>One of the key challenge is the <strong>concept/data Drift</strong>, which occurs when data change.</p>
+
+<h2 id="key-challenges">Key challenges</h2>
+<h3 id="concept-drift-and-data-drift">Concept drift and data drift</h3>
+<p>What happens when the data change after the deployment of the model? how has the data changed? the data can change <strong>gradual</strong> or <strong>suddenly</strong> (when covid appears a lot of credit card issue arise, for instance all were forced to purchase online and this trigger up a lot of anti-freud system).</p>
+
+<ol>
+  <li><strong>Data drift</strong> is the changing of the predictors X, The data drift refers in particular to the change of X and not the target variable.</li>
+  <li><strong>Concept drift</strong>  refers to the mapping of x -&gt; y(case of covid or if we are estimating the house prices we can say that this occurs when the market house increase, same X but higher Y).</li>
+</ol>
+
+<h3 id="software-engineering-issues">Software engineering issues</h3>
+<p>The prediction software typically take an input X and return an output Y. we have to care about different situations:</p>
+
+<ol>
+  <li>Realtime or batch data</li>
+  <li>Cloud vs Edge service</li>
+  <li>Compute resources (CPU/GPU/Memory) available</li>
+  <li>Latency and throughput (QueryPerSecond)</li>
+  <li>Logging</li>
+  <li>Security and Privacy</li>
+</ol>
+
+<p>the fist deployment will be very different from the maintenance of it.</p>
+
+<h2 id="deployment-patterns">Deployment patterns</h2>
+<p>common deployment cases occurs when:</p>
+
+<ol>
+  <li>New product/capability</li>
+  <li>Automate/assist with manual task</li>
+  <li>Replace previous ML system</li>
+</ol>
+
+<p>Every times we have some route like the gradual ramp up with monitoring (start slow and control, then augment); the possibility of rollback.
+an example of implementation could is called <strong>Shadow development</strong> in which ML system shadow the human runs in parallel, the output are not used for any decision during this phase. in this case we are evaluating basically the model.</p>
+
+<p>When we let the algorithm make decision we can use a <strong>Canary development</strong> in which we roll out to small fraction of traffic initially, and we inspect that the model is performing well and we monitor the system and ramp up traffic gradually.</p>
+
+<p>Another deployment patter is the <strong>blue green development</strong>, we are basically changing an old model to a new one. basically we spin up the router from the previous router to the new one. using this approach we can easy enable rollback traffic.</p>
+
+<p>One of the most useful framework is not to see the deployment as zero-one but thinking as a proper degrees of automation such as:</p>
+
+<p>human only -&gt; shadow mode-&gt; AI assistance -&gt; partial automation -&gt; full automation</p>
+
+<h2 id="monitoring-ml-system">Monitoring ML system</h2>
+<p>the best way is to use a dashboard that track how it works along time. We can track the serve load, the fraction of non-null outputs, fraction of missing input values. when decide what possible go wrong and find some metrics that can detect that problems. some examples of metric to track could be:</p>
+
+<ol>
+  <li><strong>Software metrics</strong>: memory, compute, latency, server load.</li>
+  <li><strong>input metrics</strong>: average in input length, number of missing values, or particular to the task like average image brightness.</li>
+  <li><strong>Output metrics</strong>: in case of speech recognition #times return None, # user redoes search.</li>
+</ol>
+
+<p>the key is that only monitoring the system we can understand if there are some changes or some problems into the application and perform some correction.</p>
+
+<h2 id="pipeline-monitoring">Pipeline Monitoring</h2>
+<p>going on with our speech recognition example, the audio is passed to a voice activity detection (VAD) and if this recognize that someone is speaking then it is passed to the speech recognition and then it perform the transcription. the VAD is very useful so to send to the server only the needed information.</p>
+
+<p>cascading effect can be difficult to track, we can use metrics to monitor to capture the element of each ML steps.</p>
+
+<h1 id="week-2">Week 2</h1>
+<h2 id="selecting-and-training-a-model">Selecting and training a Model</h2>
+<p>We have two approaches: model-centric AI development and the Data-centric AI development.</p>
+
+<p>[AIsystem = Code + Data]</p>
+
+<p>since the code typically are already provided by others could be useful to improve the quality of the data or the hyperparameters rather than trying to improve the model itself. Model development is an iterative process, model + hyperparameters + code, training, error analysis and again. Model development is hard because they typically doing very well on training set but they have also to perform better on the test set. Lastly they also have to perform well on business metrics/project goals! this problem could occurs when we deal with disproportionally important examples (more errors are weighted more than others). Tne problem could be related to <strong>rare classes</strong> so related to skewed data distribution.</p>
+
+<h3 id="establish-a-baseline">Establish a Baseline</h3>
+<p>One of the most useful operation is to <strong>establish a baseline</strong> for the performance of the model. for instance we can check the human level performance in all the situation and try to understand if there are some problems in particular types of task. We can notice that speech recognition in lowe bandwidth condition has an accuracy of 70% as the ML system so there is potential no space for improvement but in another spot there is.</p>
+
+<p>The best practice to create the baseline differs if we are working with structured and unstructured data. When we are dealing with unstructured data like image, audio and text it is very useful to use <strong>HLP</strong> (Human performance performance) to create baseline. Another way to establish a baseline could be the <strong>literature</strong> search for state-of-the-art already present.</p>
+
+<p>baselines helps to indicates what might be possible. in some cases is also gives a sens of what is irreducible error.</p>
+
+<h3 id="tips-for-getting-started">Tips for getting started</h3>
+
+<ol>
+  <li>Literature search to see what’s possible (do not search the latest super fancy model but pick something reasonable).</li>
+  <li>Establish a baseline.</li>
+  <li>A reasonable algorithm with good data will often outperform a great algorithm with no so good data.</li>
+  <li>Sanity check for code and algorithm, try first on small dataset before passing to the whole dataset.</li>
+</ol>
+
+<p>you also should take into account deployment constraints when picking a model.</p>
+
+<h2 id="error-analysis-and-performance-auditing">Error analysis and performance auditing</h2>
+<p>We can identify possible problems and create a spreadsheet investing personally which are the misclassified or error of the ML system trying to investing where the ML has more problems.</p>
+
+<p>Taking another problem in visual inspection when regarding specific class labels (scratch, dent), or the error could occurs in particular image properties or some other meta-data like the phone model or factory.</p>
+
+<ul>
+  <li><strong>What fraction of errors has that tag</strong>?  there could be some very useful indication to reduce the overall errors</li>
+  <li><strong>of all data with that tag, what fraction is misclassified</strong>?</li>
+  <li><strong>what fraction of all the data has that tag?</strong></li>
+</ul>
+
+<p>we also establish metrics to assess performance against these issues on appropriate slices of data.</p>
+
+<h3 id="prioritizing-what-to-work-on">Prioritizing what to work on</h3>
+<p>what percentage of data has those category? is worthful to perform and trying to improve the performance on that particular category? we have to control the overall distributions of the records understanding what are the margin to improvement of each class and decide where we can improve the situation.</p>
+
+<ul>
+  <li>how much room for improvement there is.</li>
+  <li>how frequently that category appears.</li>
+  <li>or how easy is to improve accuracy in that category?</li>
+  <li>how important it is to improve in that category.</li>
+</ul>
+
+<h3 id="skewed-datasets">Skewed datasets</h3>
+<p>Many scenario have a very unbalance classes or skewed dataset, for instance in manufacturing maybe we can reach 99.7% of y=1 and 0.3 of y=0.3. in this case row accuracy is not a useful metrics because print every time zero can return a 99.7% of accuracy.</p>
+
+<p>More useful is to draw the confusion matrix with the predicted value and the actual value;</p>
+
+<p><img src="/home/assets/images/MLOPS/confusion_matrix.PNG" alt="confusion_matrix" /></p>
+
+<p>the <strong>precision</strong> is defined as follow:</p>
+
+<p>[Precision = \frac{TP}{TP+FP}]</p>
+
+<p>in contrast the <strong>recall</strong> is defined as follow:</p>
+
+<p>[recall = \frac{TP}{TP+FN}]</p>
+
+<ul>
+  <li>what happens when the model spit out every time zero?</li>
+</ul>
+
+<p>in this case the precision is equal to 0/0 while the recall will be 0%.</p>
+
+<h4 id="f1-score">F1-Score</h4>
+<p>we can combine the precision and the recall in one further measure called <strong>F1 score</strong>.</p>
+
+<p>[F_{1} = \frac{2}{\frac{1}{P}+ \frac{1}{R}}]</p>
+
+<p>we can use this metric even when we have multi-class target.</p>
+
+<h2 id="data-iteration">Data iteration</h2>
+<p>Having a <strong>model-centric view</strong> having the data that we have we try to improve the results as possible. The academy works in this way, we take the data fixed and interactively we improve the code/model. Another prospective is the <strong>data-centric view</strong> in which the quality of the data is central. We typically have the model fixed while we try to improve the data that we have.</p>
+
+<h3 id="data-augmentation">Data Augmentation</h3>
+<p>There many ways to perform data augmentation, we are basically recreating artificially new observation.</p>
+
+<ol>
+  <li>Create realistic examples that (i) the algorithm does poorly on, but (ii) humans do well on.</li>
+</ol>
+
+<h3 id="data-iteration-loop">Data iteration loop</h3>
+<p>Taking a data centric approach is useful to use a data iteration, we add/improve data, we train the model and we perform error analysis.</p>
+
+<ul>
+  <li>can adding data hurt performance?</li>
+</ul>
+
+<p>for unstructured data problems, if:</p>
+
+<ul>
+  <li>the model is large (low bias)</li>
+  <li>the mapping x-&gt;y is clear (also human can make accurate predictions)</li>
+</ul>
+
+<p>then adding data rarely hurts accuracy. But if the model is not large in that case it could case problem. the second problem is when the mapping from x-&gt;y is not clear.</p>
+
+<h3 id="experiment-tracking">Experiment tracking</h3>
+<p>There is a need to track the experiment and the result done so far. Something that we have to track is:</p>
+
+<ol>
+  <li>Algorithm/code versioning</li>
+  <li>Dataset used</li>
+  <li>Hyperparameters</li>
+  <li>Save results somewhere</li>
+</ol>
+
+<p>Some tracking tools are:</p>
+
+<ol>
+  <li>Text files</li>
+  <li>Spreadsheet</li>
+  <li>Experiment tracking system</li>
+</ol>
+
+<p>there is the need to take notes of information needed to replicate results. Experiment results, ideally with summary metrics/analysis.</p>
+
+<h2 id="why-define-hard-is-hard">Why define hard is hard?</h2>
+<p>If we take the image recognition vision we have to care about the data labelling, having inconsistent labelled data could raise many problems. for many practical application the data preparation is crucial to improve the performance of the overall ML works. It could be also the case when dealing with structured data is that the target label is ambiguous!</p>
+
+<p>What is the input X?</p>
+<ul>
+  <li>lighting? contrast? resolution? garbage in -&gt; garbage out</li>
+  <li>when dealing with structured data, what features need to be included?</li>
+</ul>
+
+<p>What is the target label y?</p>
+<ul>
+  <li>how can we ensure consistent label?</li>
+</ul>
+
+<h3 id="mayor-types-of-data-problems">Mayor types of data problems</h3>
+<p>The problems changes a lot when we are dealing with unstructured vs structured data as well with small data (not precisely defined) or big data.</p>
+
+<p><img src="/home/assets/images/MLOPS/data_problems.PNG" alt="data_problems" />{width=300}</p>
+
+<p>when we have <strong>small data clean labels are critical</strong>, in particular when we have few observation it could be great to manually go trough each example to be sure that each label is ok!.</p>
+
+<p>for small data cleans labels are critical, there is the possibility to manually look trough dataset and fix labels where needed (important consistent between labels). while for the very big data the focus is the emphasis on data process.</p>
+
+<p>big data problems can have small data challenges too, this problems emerge when we have problems with a large dataset but where there’s a long tail of rare vents in the input that will ha small data associated.</p>
+
+<h3 id="how-to-improve-label-consistency">How to improve label consistency</h3>
+<p>the first common solution is to have multiple labelers label same example and when there is disagreement discuss and reach the definition of the target and perform action according to that.</p>
+
+<ul>
+  <li>Standardize the labels (find a consistent way of defining labels)</li>
+  <li>Merge classes when there are classes similar that are not very well defined (hard vs shallow scratch)</li>
+  <li>Introduce alternative as 0, borderline, 1.</li>
+  <li>Define special token as [intelligeble] when there are <em>data genuinely ambigous</em></li>
+</ul>
+
+<p>Human level performance are very useful to estimate reducible error (especially in unstructured data). beyond the estimating error there are some other user of HLP. in academia, it is used to establish and beat a respectable benchmark to support publication. business or product owner asks for 99% accuracy; <strong>HLP helps establish a more reasonable target</strong>.</p>
+
+<p>when the label y come from a human label, HLP « 100% may indicate ambiguous labelling instructions, improving label consistency will raise HLP.</p>
+
+<h2 id="label-and-organize-data">Label and Organize data</h2>
+<p>how long should you spend obtaining data? considering that MLOPS is an iterative problems. An advise is to get into the iteration loop as quickly as possible. or if it could be the case we can ask: <em>if you have worked on the problem before and from experience you know you need M examples</em>.</p>
+
+<p>But when there is no idea on how much data are needed and so on, starting the iteration loops as soon as possible is a great option since we can obtain useful information from error analysis.</p>
+
+<p>when we have to label data whe have three options: <strong>In-house</strong> vs <strong>outsourced</strong> vs <strong>crowdsourced</strong>. Having MLEs label data is expensive, but doing this for just a few days is usually fine.</p>
+
+<h3 id="data-pipeline">Data Pipeline</h3>
+<p>given the raw data we have to perform many operations before arriving to the actual prediction.</p>
+
+<p><img src="/home/assets/images/MLOPS/data_pipeline.PNG" alt="data_pipeline" />{width=300}</p>
+
+<p>POC and production phases, in particular the Proof Of Concept:</p>
+
+<ul>
+  <li>goals is to decide if the application is workable and wortg deploying.</li>
+  <li>focus on getting the prototype to work.</li>
+  <li>it is ok if data pre-processing is manual (but take extensive notes on how to replicate).</li>
+</ul>
+
+<p>for some application having <strong>meta-data, lineage is very important</strong>. One challenge of the ML pipelines is to be able to decompose it and be able to work on small piece of it. the question is, once having built the pipeline how we can go back and fix problems?</p>
+
+<p>To solve this problem is important to keep track of data provenance and lineage (where data come from and the sequence of steps that introduce that data into the pipeline). To make life easier we can use extensive use of <strong>meta-data</strong>, which are data about the data itself like the time, factory, camera settings, phone models and so on.</p>
+
+<h3 id="balanced-traindevtest-splits-in-small-data-problems">Balanced train/dev/test splits in small data problems</h3>
+
+<p>When we have small data we have to really care about the splitting. Perform a random train/test split is nod advisable (also when we have unbalanced class). A possible solution is to split the dataset according to the target distribution!.</p>
+
+<ul>
+  <li>also important control for the distribution of the target variable before and after the split to control that the relative frequencies are well distributed.</li>
+</ul>
+
+<h1 id="ml-data-lifecycle">ML Data Lifecycle</h1>
+<p>Data is the hardest part of ML and the most important piece to get right, broken data is the most common cause of problems in production ML system.</p>
+
+<p>ML modeling vs production ML:</p>
+
+<ul>
+  <li>static vs dynamic-shifting</li>
+  <li>overall accuracy vs fat-inference, good interpretability</li>
+  <li>optimal tuning vs continuously assess and retrain</li>
+  <li>high accuracy model vs entire system</li>
+</ul>
+
+<p>Managing the entire life cycle of data:</p>
+
+<ul>
+  <li>Labelling</li>
+  <li>Feature space coverage (same train and dev)</li>
+  <li>Minimal dimensionality</li>
+  <li>Fairness in particular to Rare conditions</li>
+</ul>
+
+<p>And it most cover the modern software development requirement such as:</p>
+
+<ul>
+  <li>Scalability</li>
+  <li>extensibility</li>
+  <li>Configuration</li>
+  <li>Consistency</li>
+  <li>Safety</li>
+  <li>Modularity</li>
+  <li>Testability</li>
+  <li>Monitoring</li>
+</ul>
+
+<p>challenged in production ML are very different from academic, we have to build integrated ML system (soft dev), it has continuously operate in production, deal with continuously changing data.</p>
+
+<h2 id="ml-pipelines">ML Pipelines</h2>
+<p>with ML Pipelines we need the infrastructure fo automating, monitoring, and maintaining model training and deployment.</p>
+
+<p><img src="/home/assets/images/MLOPS/ML_pipeline.PNG" alt="ML_pipeline" /></p>
+
+<p>this is a directed acyclic graph (DAG), which is a directed graph that has no cycles. they define the sequencing of the tasks to be performed based on their relationship.</p>
+
+<p>the orchestrator helps with pipeline automation (airflow, argo, kubeflow) and also <strong>TensorFlow Extended (TFX)</strong> is an end-to-end platform for deploying production ML pipelines.</p>
+
+<p><img src="/home/assets/images/MLOPS/tfx.PNG" alt="tfx" /></p>
+
+<p>each component is crucial to understand the data that we have, generate schema, doing preprocessing and feature engineering. Tuner and Trainer are used to train the model while the evaluate and infra validator are to evaluate the model and test that the model actual perform well.</p>
+
+<h2 id="collecting-data">Collecting data</h2>
+<p>Collecting data in real world mean understading how to collect the necessary data. the importance of the <strong>data quality</strong> is crucial to the overall system; we will need <strong>data pipeline</strong>, automating the collection, ingestion and preparation;</p>
+
+<p>when collecting data some key consideration are:</p>
+
+<ol>
+  <li>what kind of/how much data is available?</li>
+  <li>How often does the new data come in?</li>
+  <li>is it annotated? if not, how expensive is it to get it labeled?</li>
+  <li>translate user need into data needs
+    <ul>
+      <li>data needed</li>
+      <li>label needed</li>
+    </ul>
+  </li>
+</ol>
+
+<p>We can perform some preliminary operations such as:</p>
+
+<ol>
+  <li>identify data sources</li>
+  <li>check if they are refresh</li>
+  <li>consistency for values, units &amp; data types</li>
+  <li>monitor outliers and errors and missing values</li>
+  <li>Measure data effectiveness: the intuition about data value can be misleading, <em>which features have predictive value and which ones do not?</em>.
+    <ul>
+      <li><strong>Feature engineering</strong> helps to maximize the predictive signals</li>
+      <li><strong>Feature selection</strong> to measure where the predictive signal is</li>
+    </ul>
+  </li>
+</ol>
+
+<p>in a more general way we can summarize the first key concepts as:</p>
+
+<ol>
+  <li>What kind of/how much data is available</li>
+  <li>What are the details and issues of your data</li>
+  <li>What are your predictive features</li>
+  <li>What are the labels you are tracking</li>
+  <li>What are your metrics</li>
+</ol>
+
+<h2 id="degraded-model-performance">Degraded model performance</h2>
+
+<p>In ML system the degraded model performance is a real problem; the first question is <em>how do we know that we have a problem?</em> we have two types of problem, two different way of changing: 1. slow-example drift and fast example drift.</p>
+
+<p>When dealing with gradual problems an example could be due to the data such as <strong>trend and seasonality</strong>, or it could be related to different distribution of the features (or relative importance of features changes); it could also due to the world changes such as style change, scope and processes changes, competitors changes and so on.</p>
+
+<p>for sudden problem we can have <strong>data collection problem</strong> (bad sensor/camera), bad log data, moved or disable sensor/cameras; or it could be <strong>system problem</strong> such as bad software update, loss of network connectivity or system down.</p>
+
+<p>detecting problems with deployed models means monitoring the models and validate data to find problems early, and if changing the ground truth you need to label new training data.</p>
+
+<h2 id="process-feedback-and-human-labelling">Process feedback and human labelling</h2>
+<p>two ways of data labelling are the process feedback and human labeling.</p>
+
+<p>process feedback is very useful, we can perform a direct labelling, such a continuous creation of training dataset; for instance the we the features from the inference requests, we labels from monitoring prediction and asking a feedback we are able to identify if our prediction was good or not. The process feedback is done using <strong>log analysis tools</strong> (logstash);</p>
+
+<p>an alternative is human labelling where you pay human to label new records:</p>
+
+<ul>
+  <li>unlabeled data is collected</li>
+  <li>human raters are recruited</li>
+  <li>instructions tu guide raters are created</li>
+  <li>labels are collected and conflicts are resolved.</li>
+</ul>
+
+<p>in this case it could be very slow and there could be many dataset difficult for human labeling.</p>
+
+<h2 id="detecting-data-issue">Detecting data issue</h2>
+<p>data issue are  typically related to <strong>drift</strong> (changes in data over time) and <strong>skew</strong> (difference between two static versions like the training a serving data). the concept drift is when the labels meaning changing but not the data itself (see previous).</p>
+
+<ol>
+  <li>
+    <p>detecting schema skew: training and serving data do not conform to the same schema (changing literally the type of the data flowing in)</p>
+  </li>
+  <li>
+    <p>detecting distribution skew: dataset shift, changing the distribution of the data.</p>
+  </li>
+</ol>
+
+<p><img src="/home/assets/images/MLOPS/skew.PNG" alt="skew" /></p>
+
+<p>there is a straighforward way to detect skew detection; in the training data we collect the descriptive statistics and the schema; and later when we have serving data we calculate in the basic stats and then we compare them using validate statistics and if there are some anomalies some trigger are pulled and notification are raised.</p>
+
+<h3 id="tensorflow-data-validation">TensorFlow Data Validation</h3>
+
+<p>TFDV helps developer understand, validate and monitor ML data at scale. it helps generate data statistics and browser visualizations, inferring the data schema; performs validity checks against schema and trying to detect training/serving skew.</p>
+
+<h1 id="feature-engineering">Feature engineering</h1>
+<p>there are various technique to transform the data input to improve the quality of the model. Having a conceptual look at this using feature engineering meaning improving the model reducing the computational cost trying to combining, improving the data.</p>
+
+<p>Across the ML pipelines we incorporate the data, combine the features, we tune objective function, we update the model making new features and lastly since it is a iteratively process we launch and reiterate all.</p>
+
+<p>During training there is usually the entire training set, so we can use global transformation (std and use that to perform normalization) however we serve the model we have to be sure to be able to perform that trasformation as well. <em>During serving is important to include global property used in training!</em></p>
+
+<h2 id="preprocessing-for-feature-engineering">Preprocessing for feature engineering</h2>
+<p>preprocessing consists transform raw data into a clean a training ready dataset. we prepare, tunes, transform and extracts/constructs features.</p>
+
+<p>One of the most important operation is the data cleansing (removing error data), then we perform feature tuning (scale and normalization), we can also perform dimensionality reduction.</p>
+
+<ol>
+  <li>
+    <p>Mapping categorical values: for instance if we have some categorical values and example could be creating an hot encoding operations. Or a better approach could be create vocabulary</p>
+  </li>
+  <li>
+    <p>Empirical knowledge of data, for instance in text we can perform stemming, lemmatization, TF-IDF, n-grams embedding lookup and so on. in images we can think about clipping, resizing, cropping, blur and so on.</p>
+  </li>
+</ol>
+
+<h3 id="techniques">Techniques</h3>
+
+<ol>
+  <li>Feature scaling
+    <ul>
+      <li>Normalization and standardization</li>
+      <li>Bucketizing/binning</li>
+    </ul>
+  </li>
+</ol>
+
+<p><strong><em>Scaling</em></strong> means converts values from their natural range into a precise range (eg images are typically rescaled to [-1,1]); it helps the model to converge and dealing with NaN errors during training.</p>
+
+<p>for <strong>Normalization</strong> the formula is:</p>
+
+<p>[X_{norm} = \frac{X-X_{min}}{X_{max}-x_{min}}]</p>
+
+<p>the normalization lives in [0,1], it is typically good if the distribution <em>is not gaussian</em>.</p>
+
+<p><strong>Standardization</strong> (z-score) is a way to scale using the standard deviation:</p>
+
+<p>[X_{std} = \frac{X-\mu}{\sigma}]</p>
+
+<p>the Standardization typically $\sim N(0,\sigma)$ the range in this case is -inf + inf (+2 means over 2 standard deviation!)</p>
+
+<p>Talking about grouping we have <strong>Bucketizing</strong>, this technique is used for instance when we are dealing with dates we can group all the years from 1940 to 1960 into just one categorical value that will be encoded later.</p>
+
+<h2 id="featuring-engineering-at-scale">Featuring engineering at scale</h2>
+
+<p><img src="/home/assets/images/MLOPS/feature_eng_at_scale.PNG" alt="" /></p>
+
+<p>we have to care first of all at inconsistencies in feature engineering like the diverse deployments scenarios (mobile vs server vs web). There is a notion of granularity, we have to perform an <strong>instance-level</strong> (clipping, resizing) and a <strong>full-pass</strong> (minmax, standard scaling) operation.</p>
+
+<p>we can perform the feature engineering at the whole dataset or within the model (batch per batch). both of these have pros and cons.</p>
+
+<h3 id="tensorflow-transform">TensorFlow Transform</h3>
+
+<p>it does training data and process it, creating also meta-data storage. Meta data are important for the lineage of the data;</p>
+
+<p><img src="/home/assets/images/MLOPS/tf_trans.PNG" alt="tf_trans" /></p>
+
+<p>tftransform use apache beam to be able to process data in a very very fast way. Doing this operation we are using the same data in training and serving, this is very important so we are able to use the same data in serving layer. This is done saving a TFGraph.</p>
+
+<p>the tf.transform analyzers can do different operations such that scaling, bucketizing, vocabulary and also dimensionality reduction.</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="n">tf</span>
+<span class="kn">import</span> <span class="nn">apache_beam</span> <span class="k">as</span> <span class="n">beam</span>
+<span class="kn">import</span> <span class="nn">apache_beam.io.iobase</span>
+<span class="kn">import</span> <span class="nn">tensorflow_transform</span> <span class="k">as</span> <span class="n">tft</span>
+<span class="kn">import</span> <span class="nn">tensorflow_transform.beam</span> <span class="k">as</span> <span class="n">tft_beam</span>
+
+<span class="k">def</span> <span class="nf">preprocessing_fn</span><span class="p">(</span><span class="n">inputs</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">DENSE_FLOAT</span><span class="p">:</span>
+        <span class="n">outputs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">tft</span><span class="p">.</span><span class="n">scale_to_z_score</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+    <span class="s">"""
+    all the operations needed
+    """</span>
+    <span class="k">return</span> <span class="n">outputs</span>
+</code></pre></div></div>
+
+<p>the operation that we typically do are in order:</p>
+
+<ol>
+  <li>collect raw data</li>
+  <li>define metadata</li>
+  <li>transform</li>
+  <li>generate a constant graph with the required transformation</li>
+</ol>
+
+<p>see the notebook. Tft transform runs on apache beam which run on spark and flinn!</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="n">tf</span>
+<span class="kn">import</span> <span class="nn">tensorflow_transform</span> <span class="k">as</span> <span class="n">tft</span>
+<span class="kn">import</span> <span class="nn">tensorflow_transform.beam</span> <span class="k">as</span> <span class="n">tft_beam</span>
+<span class="kn">from</span> <span class="nn">tensorflow_transform.tf_metadata</span> <span class="kn">import</span> <span class="n">dataset_metadata</span>
+<span class="kn">from</span> <span class="nn">tensorflow_transform.tf_metadata</span> <span class="kn">import</span> <span class="n">schema_utils</span>
+<span class="kn">import</span> <span class="nn">pprint</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+
+<span class="c1"># define sample data
+</span><span class="n">raw_data</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="p">{</span><span class="s">'x'</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">'y'</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">'s'</span><span class="p">:</span> <span class="s">'hello'</span><span class="p">},</span>
+      <span class="p">{</span><span class="s">'x'</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s">'y'</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s">'s'</span><span class="p">:</span> <span class="s">'world'</span><span class="p">},</span>
+      <span class="p">{</span><span class="s">'x'</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s">'y'</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s">'s'</span><span class="p">:</span> <span class="s">'hello'</span><span class="p">}</span>
+  <span class="p">]</span>
+</code></pre></div></div>
+
+<p>define the schema of the data with the <em>DatasetMetadata class</em>.</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">raw_data_metadata</span> <span class="o">=</span> <span class="n">dataset_metadata</span><span class="p">.</span><span class="n">DatasetMetadata</span><span class="p">(</span>
+    <span class="n">schema_utils</span><span class="p">.</span><span class="n">schema_from_feature_spec</span><span class="p">({</span>
+        <span class="s">'y'</span><span class="p">:</span> <span class="n">tf</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">FixedLenFeature</span><span class="p">([],</span> <span class="n">tf</span><span class="p">.</span><span class="n">float32</span><span class="p">),</span>
+        <span class="s">'x'</span><span class="p">:</span> <span class="n">tf</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">FixedLenFeature</span><span class="p">([],</span> <span class="n">tf</span><span class="p">.</span><span class="n">float32</span><span class="p">),</span>
+        <span class="s">'s'</span><span class="p">:</span> <span class="n">tf</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">FixedLenFeature</span><span class="p">([],</span> <span class="n">tf</span><span class="p">.</span><span class="n">string</span><span class="p">),</span>
+    <span class="p">}))</span>
+</code></pre></div></div>
+
+<p>define the process funtion:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">preprocessing_fn</span><span class="p">(</span><span class="n">inputs</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="s">'x'</span><span class="p">]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="s">'y'</span><span class="p">]</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="s">'s'</span><span class="p">]</span>
+    
+    <span class="c1"># data transformations using tft functions
+</span>    <span class="n">x_centered</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">tft</span><span class="p">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">y_normalized</span> <span class="o">=</span> <span class="n">tft</span><span class="p">.</span><span class="n">scale_to_0_1</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">s_integerized</span> <span class="o">=</span> <span class="n">tft</span><span class="p">.</span><span class="n">compute_and_apply_vocabulary</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="n">x_centered_times_y_normalized</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_centered</span> <span class="o">*</span> <span class="n">y_normalized</span><span class="p">)</span>
+    
+    <span class="c1"># return the transformed data
+</span>    <span class="k">return</span> <span class="p">{</span>
+        <span class="s">'x_centered'</span><span class="p">:</span> <span class="n">x_centered</span><span class="p">,</span>
+        <span class="s">'y_normalized'</span><span class="p">:</span> <span class="n">y_normalized</span><span class="p">,</span>
+        <span class="s">'s_integerized'</span><span class="p">:</span> <span class="n">s_integerized</span><span class="p">,</span>
+        <span class="s">'x_centered_times_y_normalized'</span><span class="p">:</span> <span class="n">x_centered_times_y_normalized</span><span class="p">,</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<p>apache beam flow:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Ignore the warnings
+</span><span class="n">tf</span><span class="p">.</span><span class="n">get_logger</span><span class="p">().</span><span class="n">setLevel</span><span class="p">(</span><span class="s">'ERROR'</span><span class="p">)</span>
+
+<span class="c1"># a temporary directory is needed when analyzing the data
+</span><span class="k">with</span> <span class="n">tft_beam</span><span class="p">.</span><span class="n">Context</span><span class="p">(</span><span class="n">temp_dir</span><span class="o">=</span><span class="n">tempfile</span><span class="p">.</span><span class="n">mkdtemp</span><span class="p">()):</span>
+    <span class="c1"># define the pipeline using Apache Beam syntax
+</span>    <span class="n">transformed_dataset</span><span class="p">,</span> <span class="n">transform_fn</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="c1"># analyze and transform the dataset using the preprocessing function
+</span>        <span class="p">(</span><span class="n">raw_data</span><span class="p">,</span> <span class="n">raw_data_metadata</span><span class="p">)</span> <span class="o">|</span> <span class="n">tft_beam</span><span class="p">.</span><span class="n">AnalyzeAndTransformDataset</span><span class="p">(</span><span class="n">preprocessing_fn</span><span class="p">))</span>
+
+<span class="c1"># unpack the transformed dataset
+</span><span class="n">transformed_data</span><span class="p">,</span> <span class="n">transformed_metadata</span> <span class="o">=</span> <span class="n">transformed_dataset</span>
+
+<span class="c1"># print the results
+</span><span class="k">print</span><span class="p">(</span><span class="s">'</span><span class="se">\n</span><span class="s">Raw data:</span><span class="se">\n</span><span class="s">{}</span><span class="se">\n</span><span class="s">'</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">pprint</span><span class="p">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)))</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'Transformed data:</span><span class="se">\n</span><span class="s">{}'</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">pprint</span><span class="p">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">transformed_data</span><span class="p">)))</span>
+</code></pre></div></div>
+
+<h2 id="feature-selection">Feature selection</h2>
+<p>we try to understand which features are useful and which one are not, basically we are removing the features that do not influence the outcome (reducing the size of the feature space).</p>
+
+<p>in unsupervised feature selection:</p>
+<ol>
+  <li>features.target variable relationship not considered</li>
+  <li>remove the redundant features (correlation with ohers)</li>
+</ol>
+
+<p>we have different techniques:</p>
+
+<ol>
+  <li><strong>Filter methods</strong>
+We recall that correlated features are usually redundat (typically remove one), other filter are <strong>pearson correlation</strong>; we also have different correlation coeffieicent like kendall tau rank correlation coefficient, spearman’s rank correlation coefficient.</li>
+</ol>
+
+<p>the skLearn univariate feature selection routines:</p>
+
+<ul>
+  <li>SelectKbest</li>
+  <li>SelectPercentile</li>
+</ul>
+
+<ol>
+  <li><strong>Wrapper methods</strong></li>
+</ol>
+
+<ul>
+  <li>
+    <p>Forward selection:
+is and iterative, greedy method; it start with 1 feature and we evaluate model performance when adding each of the additional features, one at the time. we add next feature that gives the best performance and we go on.</p>
+  </li>
+  <li>
+    <p>Backward elimination:
+start with all features and we evaluate the model removing each of the included features, one at the time.</p>
+  </li>
+</ul>
+
+<ol>
+  <li><strong>Embedded methods</strong>
+Its a supervised method like l1 or l2 regularization and feature importance. They are intrinsically related to the model used (ridge lasso regression).</li>
+</ol>
+
+<p>see notebooks.</p>
+
+<h1 id="data-journey-and-data-storage">Data Journey and data storage</h1>
+<h2 id="artifacts-and-the-ml-pipelines">Artifacts and the ML pipelines</h2>
+<p>They are created as the components of the ML pipeline execute, it include all of the data and objects which are produced by the pipeline components (schema model itself, metrics etc.). the <strong>data provenance</strong> is the chain of transofrmations that led to the creation of a particular artiicat, they are very helpful for debugging and monitoring the model.</p>
+
+<p>we can tracking different <strong>Data versioning</strong>, ML requires reproducibility also in term of code (git) and environment versioning (docker).</p>
+
+<h2 id="meta-data">Meta-data</h2>
+<p>Being able to interpret a model and trace back the provenance of the data is very important for ML system. ML meta-data helps to keep track of this. Every run of the pipeline produce meta-data (equivalent to logging).</p>
+
+<p>considering the ML data pipeline we have data validation and then data transformation; if we have centralized repository we store the result and the output of them. we can have a metadata store.</p>
+
+<p>we can use the <strong>ML Metadata library</strong>, it supports multiple storage backends:</p>
+
+<ul>
+  <li>Data entities to consider as units: <strong>artifact, execution and context</strong>.</li>
+  <li>Types such as ArtifactType, ExecutionType, ContextType</li>
+  <li>
+    <p>relationships: event, attribution, assoociations.</p>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">ArtifactType</code> describes an artifact’s type and its properties that are stored in the metadata store. You can register these types on-the-fly with the metadata store in code, or you can load them in the store from a serialized format. Once you register a type, its definition is available throughout the lifetime of the store.</li>
+  <li>An <code class="language-plaintext highlighter-rouge">Artifact</code> describes a specific instance of an ArtifactType, and its properties that are written to the metadata store.</li>
+  <li>An <code class="language-plaintext highlighter-rouge">ExecutionType</code> describes a type of component or step in a workflow, and its runtime parameters.</li>
+  <li>An <code class="language-plaintext highlighter-rouge">Execution</code> is a record of a component run or a step in an ML workflow and the runtime parameters. An execution can be thought of as an instance of an ExecutionType. Executions are recorded when you run an ML pipeline or step.</li>
+  <li>An <code class="language-plaintext highlighter-rouge">Event</code> is a record of the relationship between artifacts and executions. When an execution happens, events record every artifact that was used by the execution, and every artifact that was produced. These records allow for lineage tracking throughout a workflow. By looking at all events, MLMD knows what executions happened and what artifacts were created as a result. MLMD can then recurse back from any artifact to all of its upstream inputs.</li>
+  <li>A <code class="language-plaintext highlighter-rouge">ContextType</code> describes a type of conceptual group of artifacts and executions in a workflow, and its structural properties. For example: projects, pipeline runs, experiments, owners etc.</li>
+  <li>A <code class="language-plaintext highlighter-rouge">Context</code> is an instance of a ContextType. It captures the shared information within the group. For example: project name, changelist commit id, experiment annotations etc. It has a user-defined unique name within its ContextType.</li>
+  <li>An <code class="language-plaintext highlighter-rouge">Attribution</code> is a record of the relationship between artifacts and contexts.</li>
+  <li>An <code class="language-plaintext highlighter-rouge">Association</code> is a record of the relationship between executions and contexts.</li>
+</ul>
+
+<p>all the components of the pipeline are connected to the <strong>MetadataStore</strong>; we can create is using Sqlite or MySql.</p>
+
+<p><img src="/home/assets/images/MLOPS/metadata_store.PNG" alt="metadata_store" /></p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">## sqlite
+</span><span class="n">connection_config</span> <span class="o">=</span> <span class="n">metadata_store_pb2</span><span class="p">.</span><span class="n">ConnectionConfig</span><span class="p">()</span>
+<span class="n">connection_config</span><span class="p">.</span><span class="n">sqlite</span><span class="p">.</span><span class="n">filename_uri</span> <span class="o">=</span> <span class="s">"path"</span>
+<span class="n">connection_config</span><span class="p">.</span><span class="n">sqlite</span><span class="p">.</span><span class="n">connection_mode</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="n">store</span> <span class="o">=</span> <span class="n">metadata_store</span><span class="p">.</span><span class="n">MetaDataStore</span><span class="p">(</span><span class="n">connection_config</span><span class="p">)</span>
+
+<span class="c1">## mysql
+</span><span class="n">connection_config</span> <span class="o">=</span> <span class="n">metadata_store_pb2</span><span class="p">.</span><span class="n">ConnectionConfig</span><span class="p">()</span>
+<span class="n">connection_config</span><span class="p">.</span><span class="n">mysql</span><span class="p">.</span><span class="n">host</span> <span class="o">=</span> <span class="s">"..."</span>
+<span class="n">connection_config</span><span class="p">.</span><span class="n">mysql</span><span class="p">.</span><span class="n">port</span> <span class="o">=</span> <span class="s">"..."</span>
+<span class="n">connection_config</span><span class="p">.</span><span class="n">mysql</span><span class="p">.</span><span class="n">database</span> <span class="o">=</span> <span class="s">"..."</span>
+<span class="n">connection_config</span><span class="p">.</span><span class="n">mysql</span><span class="p">.</span><span class="n">user</span> <span class="o">=</span> <span class="s">"..."</span>
+<span class="n">connection_config</span><span class="p">.</span><span class="n">mysql</span><span class="p">.</span><span class="n">password</span> <span class="o">=</span> <span class="s">"..."</span>
+
+<span class="n">store</span> <span class="o">=</span> <span class="n">metadata_store</span><span class="p">.</span><span class="n">MetaDataStore</span><span class="p">(</span><span class="n">connection_config</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="advance-labelling">Advance labelling</h2>
+<h3 id="semi-supervise-learning">Semi-supervise learning</h3>
+<p>The starting situation is when you have a small pool human labeled data. the propagations of the labels to the unlabelled data id done computing some “similarity” ora “community structure”.</p>
+
+<p>there are many way to perform this operation such as label propagation graph based</p>
+
+<p><img src="/home/assets/images/MLOPS/semi-supervised-learning.PNG" alt="semi-supervised-learning" /></p>
+
+<h3 id="active-learning">Active learning</h3>
+<p>we select the points to be labeled that would be most informative for model training. we select labels that will best help the model to train. we start we unlabeled pool data and we active learning sample trough a human annotator and label the most useful training data.</p>
+
+<p>how do we do intelligent sampling? with active learning we choose the new observation that are most uncertain.</p>
+
+<h1 id="ml-deployment">ML Deployment</h1>
+<p>Ml serving means make your model available to end user, when doing this operation we have to care about 3 key concepts: the model, an interpreter and the input data;</p>
+
+<p>the importance metrics to be considered when deploying a model are: latency (delay between user action and response), cost, throughput (number of successful requests served per uni time eg call x secs).</p>
+
+<p>as model become more complex the resource required increase (GPU, TPU, model registry and so on); finding the right balance between cost and complexity is the way. we have two way to evaluate a model: the first is the <strong>model’s metric</strong> such as the accuracy, precision, MSE and we also have to consider the satisfying <strong>gating metric</strong> such as the latency, the model size and the GPU load.</p>
+
+<p>One factor is the use of accelerator, <strong>GPU</strong> tend to be optimized for parallel throughput while <strong>TPU</strong> are optimized for complex models and large batches.</p>
+
+<p>To deal with latency a good solution is to use NoSQL database for caching data such as Redis, Google Cloud MemoryStore, google cloud Firestore, amazon dynamoDB.</p>
+
+<p>The deployment when there are simple application could be a web app in which the users make requests via web application, the model is wrapped as API service (FastAPI, django, flask). Alternatives are Clipper which is an open.source from UC berkeley or TensorFlow Serving.</p>
+
+<p>There are many advantages of serving with a managed service for instance realtime endpoint for low-latency predictions, scale automatically based on traffic, use GPU/TPU for faster predictions. Example of <a href="https://github.com/https-deeplearning-ai/machine-learning-engineering-for-production-public/blob/main/course4/week1-ungraded-labs/C4_W1_Optional_Lab_1_XGBoost_CAIP/C4_W1_Optional_Lab_1.md">Google cloud AI platform</a></p>
+
+<h2 id="tensorflow-serving">TensorFlow serving</h2>
+<p>the easiest way is using docker:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker pull tensorflow/serving:latest-gpu
+</code></pre></div></div>
+
+<p>there is also an available Binaries called <em>tensorflow-model-server</em>.</p>
+
+<h2 id="model-serving-architecture">Model serving architecture</h2>
+
+<p>We can perform two choice: <strong>On prem</strong> vs <strong>On Cloud</strong>. Typically large companies use on prem option while on cloud is prefered by small companies. In the first case you have to manually download and maintain when deploying on cloud you can use Virtual Machine and deploy on their infrastructure (and use provided ML workflow).</p>
+
+<p>the high level architecture of a model is as follow: <strong>model file</strong> that is read by the <strong>model server</strong> that provide an API  to use it (REST or gRPC). some of the most popular model servers are:</p>
+
+<ul>
+  <li><a href="https://www.tensorflow.org/tfx/serving/architecture">TensorFLow serving</a></li>
+  <li><a href="https://github.com/pytorch/serve">TorchServe</a></li>
+  <li><a href="https://www.kubeflow.org/docs/external-add-ons/serving/">KubeFlow Serving</a></li>
+  <li>Nvidia Triton Inference Server</li>
+</ul>
+
+<p>looking at the more in details TensorFlow serving it provides and and real-time inference system, multi-model serving (A-B testing and so on)and exposes a gRPC and REST endpoints.</p>
+
+<p><img src="/home/assets/images/MLOPS/tf_serving.PNG" alt="tf serving" />{width=200}</p>
+
+<p>Example with DOCKER and FASTAPI ( <a href="https://github.com/https-deeplearning-ai/machine-learning-engineering-for-production-public/tree/main/course4/week2-ungraded-labs/C4_W2_Lab_1_FastAPI_Docker">Guide</a>)</p>
+
+<h2 id="scaling-infrastructure">Scaling infrastructure</h2>
+<p>There are two way to scale: vertical scaling (more RAM, GPU, increased power) or <strong>horizontal scaling</strong> (adding more device). cloud computing is useful since it allow to scale horizontally when needed and immediately scale down when finished. When choosing look if there is the possibility to manually scale, auto scaling, latency and cost of the platform.</p>
+
+<p>when scaling horizontally there are a lot of problems related to the configuration/access/permission and son on. one solution to this problem is to use Virtual Machines. Containers are quite similar to VM but they do not require operating systems! one of the best solution is to use Docker management containers.</p>
+
+<p><img src="/home/assets/images/MLOPS/containers.PNG" alt="containers" /></p>
+
+<p>containers offer convenient way to scaling horizzontaly but there are some problems as well, like any app in a containers could go down. We want to be able to switch the traffic so the application never goes off.</p>
+
+<p>The idea of <strong>orchestration</strong> is that having a set of tools that handle the life cycle of containers managers.</p>
+
+<p><img src="/home/assets/images/MLOPS/orchestration.PNG" alt="orchestration" /></p>
+
+<p>two of the mnost pupular container orchestration tools are <strong>Kubernetes</strong> and <strong>docker swarm</strong>. when using kubernetes Kubeflow is the choice.</p>
+
+<p>(https://github.com/https-deeplearning-ai/machine-learning-engineering-for-production-public/tree/main/course4/week2-ungraded-labs/C4_W2_Lab_2_Intro_to_Kubernetes)</p>
+
+<h2 id="data-processing-and-inference">Data Processing and Inference</h2>
+<h3 id="online-inference">Online inference</h3>
+<p>If there are some popular products you can cache them and retrieve it faster than other requests. this type of cache is used with NoSQL database such as DynamoDB Redis and so on.</p>
+
+<p>test the latency using <a href="https://locust.io/">locust</a>,  ( <a href="https://github.com/https-deeplearning-ai/machine-learning-engineering-for-production-public/tree/main/course4/week2-ungraded-labs/C4_W2_Lab_3_Latency_Test_Compose">GUIDE</a> )</p>
+
+<h3 id="data-preprocessing">Data preprocessing</h3>
+<p>the models deal with pre-process data and that must be done somewhere. when preprocessing we have to deal with:</p>
+
+<ul>
+  <li>data cleansing (invalid data)</li>
+  <li>feature tuning (normalization, clipping outliers, missing values)</li>
+  <li>feature construction (combine inputs if needed)</li>
+  <li>represent transformation (one-hot encoding, vectorization, …)</li>
+  <li>feature selection</li>
+</ul>
+
+<p>we have two tools that really help perform this operation at scale: <a href="https://beam.apache.org/get-started/try-apache-beam/"><strong>apache Beam</strong></a> and <strong>tf transform</strong>.</p>
+
+<h2 id="experiment-tracking-1">Experiment Tracking</h2>
+<p>We need reproducible products and tools that allow to create ML system that are reliable and reproducible. What does it mean to track experiments?</p>
+
+<ul>
+  <li>Enable you to duplicate a result (parameters, dataset, model version)</li>
+  <li>Enable you to meaningfully compare experiments</li>
+  <li>Manage code/data versions, hyperparameters, environment, metrics.</li>
+  <li>Organize them in a meaningful way.</li>
+</ul>
+
+<p>simple experiments are done with notebooks, however code is usually not promoted to production. There are some tools for managing notebook code such as nbconvert (.ipynb to .py), jupytext, neptune-notebooks.</p>
+
+<p>As you perform experiments you have to tracking runtime parameters, the simples way is to use config files declaring the metric, learning rate and so on. as well with the parameters you also should perform <strong>data versioning</strong>; there are good tools for data versioning such as <strong>Neptune</strong>, git LFS, pachyderm and so on.</p>
+
+<p>TensorBoard could be a tools for logging results or <a href="https://neptune.ai/product#what-is-metadata-store"><strong>neptune.ai</strong></a> vs <strong>MLFLOW</strong> vs <strong>WANDB</strong>.</p>
+
+<h2 id="ml-solution-lifecycle">ML Solution lifecycle</h2>
+<p><strong>CI / CD / CT / CM</strong>:</p>
+
+<ul>
+  <li>Continuous integration</li>
+  <li>Continuous delivery</li>
+  <li>Continuous training</li>
+  <li>Continuous monitoring</li>
+</ul>
+
+<h3 id="mlops-level-0">MLOPS level 0</h3>
+<p>the level of automation of ML Pipelines determines the maturity of the MLops process, the goal is to automate trining and deployment of ML models into the core softwares system, providing consistent monitoring. The level 0 is the <strong>manual process</strong>, including the EDA, the preparation, training and evaluation (<em>Experimental Code</em>).</p>
+
+<p>in this manual process we have a less frequent releases, few CI/CD. there are many challenge in MLOps level 0:</p>
+
+<ul>
+  <li>Need for actively monitoring the quality of your model in production</li>
+  <li>Retraining your production models with new data</li>
+  <li>Continuously experimenting with new implementations to improve the data and model.</li>
+</ul>
+
+<h3 id="mlops-level-1-2">MLOPS level 1-2</h3>
+<p>we have some sort of orchestrated experiment, there is a need to repeated experiment. The transition between steps are orchestrated; we need reusable, composable, and shareable components. When some triggers is pulled to pipeline is called and the new model is created and replace the previous.</p>
+
+<p><img src="/home/assets/images/MLOPS/ml-1.PNG" alt="ml-1" /></p>
+
+<p><a href="https://neptune.ai/blog/mlops">Guide</a></p>
+
+<h3 id="ml-model-versioning">ML Model versioning</h3>
+<p>Each model version can have different data, parameters and results, here ML models is used. In software deveoper we have 3 different type of version:</p>
+
+<ul>
+  <li><strong>Major</strong>: contains incompatible API changes</li>
+  <li><strong>Minor</strong>: adds functionality in a backward compatible manner</li>
+  <li><strong>Patch</strong>: makes backwards compatible bug fixes</li>
+</ul>
+
+<p>in ML there is no defined ways, a possible approach consists of:</p>
+
+<ul>
+  <li><strong>Major</strong>: incompatibility in data or target variable</li>
+  <li><strong>Minor</strong>: model performance is improved</li>
+  <li><strong>Pipeline</strong>: pipeline of model training is changed</li>
+</ul>
+
+<h3 id="model-lineage">Model Lineage</h3>
+<p>is a set of relationship that lead to the model version researched.</p>
+
+<p><img src="/home/assets/images/MLOPS/lineage.PNG" alt="lineage" /></p>
+
+<p>model registry contains all the possible lineage:</p>
+
+<p><img src="/home/assets/images/MLOPS/registry.PNG" alt="registry" /></p>
+
+<p>in the registry are recorded as well as meta data such as the model versions, the model serialized artifacts, free text annotations and links to other ML artifact and metadata stores.</p>
+
+<p>Some good tools for ML registry are: Azure Ml model registry, SAS Model Manager, MLflow model registry, Google AI platform, Algorithmia.</p>
+
+<p><a href="https://neptune.ai/blog/machine-learning-model-management">GUIDE</a></p>
+
+<h3 id="continous-delivery">Continous Delivery</h3>
+<p>it could be very useful tu use unittest and github! each time a new model is deployed all the test are runned and if there is some problems the operation is not completed. The main test are <strong>Unit testint</strong>, you can control that each component in the pipeline produces exteped artificat.</p>
+
+<p>For input data is concerne that the feature engineering are correct, like test values, type values, test format ahd so forth. For the model it must be seen in a modular way as well, controlling for NaN, empty strings, shapes, accuracy and various metric.</p>
+
+<p>You should cover edge and corners cases!</p>
+
+<h3 id="monitoring-targets">Monitoring Targets</h3>
+
+<ul>
+  <li>Model input distributions</li>
+  <li>Model prediction distributions</li>
+  <li>Model versions</li>
+  <li>Input/prediction correlation</li>
+</ul>
+
+<p>use the logs to keep track of the <strong>model inputs and predictions</strong>. Basic log storage is often unstructured way (like ElasticSearch);</p>
+:ET
