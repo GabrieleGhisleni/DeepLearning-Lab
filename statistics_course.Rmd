@@ -1,0 +1,723 @@
+---
+title: "Exercises"
+author: "Gabriele"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r include=F}
+knitr::opts_chunk$set(warning = F, message = F)
+```
+
+
+
+> # K-NN
+
+- knn() does not have distinct functions for fit and predict.
+
+```{r}
+library(ISLR)
+data(Smarket)
+df <- as.data.frame(Smarket)
+train <- df$Year < 2005
+x_train <- df[train, 2:3]
+x_test <- df[!train, 2:3]
+y_train <- df$Direction[train]
+y_test <- df$Direction[!train]
+error_rate_test <- c()
+error_rate_train <- c()
+```
+
+The library for knn is **library('class')**
+It requires: *(train_X, new_obs, train_Y aka training labels, k)* and return the prediction for new_obs! if want to calculate the train error just pass train_X two times.
+
+```{r}
+set.seed(11)
+library(class)
+for (i in 1:100){
+  train_pred <- knn(x_train,x_train, y_train, k=i)
+  test_pred <- knn(x_train, x_test, y_train, k=i)
+  error_rate_test[i] <- mean(test_pred!=y_test)
+  error_rate_train[i] <- mean(train_pred!=y_train)
+}
+```
+
+```{r fig.width=4, fig.height =4}
+library(ggplot2)
+library(ggthemes)
+
+data <- data.frame(error_rate_test, error_rate_train)
+ggplot(data=data)+
+  geom_line(data=data, aes(x=1:100, y=error_rate_train),  color="firebrick")+
+  geom_line(data=data, aes(x=1:100, y=error_rate_test), color="royalblue")+
+  ggthemes::theme_tufte()+ggtitle("Train-Test error ~ K")+xlab("")+ylab("Error")
+```
+
+> # GLM, LDA and QDA
+
+Functions *qda*, *lda* in the package **MASS**, the syntax is the same as glm. 
+
+```{r}
+glm.fit <- glm(Direction ~ Lag1+Lag2,
+               data=df,
+               family=binomial,
+               subset=train)
+
+summary(glm.fit)
+#glm.probs <- predict(glm.fit, df.2005, type="response") #type=response!
+#glm.class <- ifelse(glm.probs > 0.5, "Up", "Down")
+```
+
+Null vs residual deviance: null deviance refers to a model with just the intercept (null model: n-1 degrees of freedom); residual variance refers to the trained model with p coefficients (n-p degrees of freedom).
+
+```{r}
+library(MASS)
+df <- Smarket
+train <- (df$Year < 2005)
+df.2005 <- df[!train, ]
+Direction.2005 <- df$Direction[!train]
+lda.fit <- lda(Direction ~ Lag1+Lag2,
+               data=df,
+               subset=train)
+
+lda.fit
+```
+
+we can also access the posterior probability!
+
+```{r}
+lda.pred <- predict(lda.fit, df.2005)
+names(lda.pred)
+```
+
+for the QDA same as before!
+
+```{r}
+qda.fit <- qda(Direction ~ Lag1 + Lag2,
+               data=df,
+               subset=train)
+```
+
+> # Naive Bayes
+
+
+```{r}
+library("e1071")
+df <- as.data.frame(Titanic)
+repeating_sequence <- rep(seq(nrow(df)), df$Freq)
+df_full <- df[repeating_sequence, ]
+df_full$Freq <- NULL
+
+nbfit <- naiveBayes(Survived ~ ., data=df_full)
+nbfit
+```
+
+```{r}
+# simple prediction
+nb_preds <- predict(nbfit, df_full)
+# posterior prediction 
+nb_probs <- predict(nbfit, df_full, type="raw")
+```
+
+> # Cross Validation
+
+```{r}
+set.seed(24)
+x <- rnorm(100)
+y <- x - 2 * x^2 + rnorm(100)
+dataf <- data.frame(y, x, x2 = x^2, x3 = x^3, x4 = x^4)
+```
+n = 100 is the number of observations
+p = 2 is the number of variables
+
+the function *cv.glm* is inside the library **boot** and require *(all_dataset, model, K=n)*.
+- By *default it perform a LOOCV!!*, using LOOCV the results with another seed are exactly the same because LOOCV is deterministic (no randomness involved).
+- If we want to perform a K-FOLD-CROSS-VALIDATION we have to change the parameter K into the number of folder that we want, as K=10. 
+- To access the cross validation errror *$delta[1]*. 
+
+
+```{r}
+library(boot)
+glm.fit2 <- glm(y ~ x + x2, data = dataf) #linear regression with glm()
+CV_error <- cv.glm(dataf, glm.fit2)
+CV_error$delta[1] # cross_validation error!
+```
+> # Regsubset
+
+```{r}
+set.seed(1)
+x <- rnorm(100)
+epsilon <- rnorm(100)
+y <- 4 + 5 * x - 2 * x^2 + 4 * x^3 + epsilon
+```
+
+the fucntion **regsubsets** is inside the library **leaps**. 
+it require *(formula_model, data, nvmax = 8, method = c("backward", "forward"))*: nvmax is the maximum number of variable allow which by default is equal to 8.
+
+```{r}
+library(leaps)
+df <- data.frame(y, x)
+regfit.full <- regsubsets(y ~ poly(x, 10), data = df, nvmax = 10)
+```
+
+We see the variable selected *summary(result_regsubsets)*
+
+```{r}
+(reg.summary <- summary(regfit.full))
+```
+
+Are divided by line so for instance if i want one variable i have to look at the row that has 1 on the left and see where is the "*" in this case is under "poly(x, 10)2". 
+
+Since the model selection is done according to different criterion we can look at all of them:
+
+```{r}
+names((reg.summary))
+```
+
+there are: Mallows' Cp *cp*, Schwartz's information criterion, BIC *bic*, Residual sum of squares for each model *rss*, Adjusted r-squared *adjr2*. There are all lowest is better except for the adjr^2!!
+
+We can extract them and plot:
+
+```{r}
+criterion <- data.frame(reg.summary$bic)
+ggplot(criterion, aes(x=1:nrow(criterion), y=reg.summary.bic))+
+  geom_line(colour="firebrick", lwd=1.2)+
+  geom_point(data=criterion, aes(x=which.min(reg.summary.bic), y=min(reg.summary.bic)), 
+             size=4, color="firebrick")+
+  ggthemes::theme_tufte()+
+  ggtitle("Bic ~ Number of variable used")+xlab("N of variable")+ylab("BIC")
+```
+
+
+we can also have a graphical representation of the model selection use the normal plot function and specifiyg which criterion are interested in with *scale="bic"*. This kind of plot is useful when there are more than 10 models involved and thus the table output by summary(regfit.full) becomes difficult to read.
+
+- The “best” models are in the upper part of the plots.
+
+```{r}
+plot(regfit.full, scale="bic", col="firebrick4", main="BIC")
+```
+
+To see what are the coefficients of those variable:
+
+```{r}
+coef(regfit.full, id= which.min(reg.summary$bic)) # if we take 2 as best varible those are:
+```
+
+**Important remark**: remember that from now on all model-fitting operations (including variable selection!!) are to be made on the training observations only. If you use the full dataset, the resulting error estimates are not going to be accurate (some observations are seen and used twice in training and validation!).
+
+- split the original data into training and validation sets;
+- perform best subset selection on the training set;
+- *compute the validation error of the best model at each model size and find the optimal number of variables* (i.e., minimum validation error);
+- perform best subset selection on the original data and select the model with the optimal number of variables found previously.
+
+
+```{r}
+for (i in 1:length(df)){
+  coef(regfit.full, id= i) # try with all possible model size and calculate CV error!
+  # at the end pick the model which has lower CV error!
+}
+```
+ subset selection custom predict method for regsubsets (see Lab3)
+
+ predict.regsubsets <- function(object, newdata, id, ...) {
+ form <- as.formula(object$call[[2]])
+ this extracts the formula used in the call to regsubsets()
+ mat <- model.matrix(form, newdata)
+ coefi <- coef(object, id = id)
+ xvars <- names(coefi)
+ mat[, xvars] %*% coefi
+ }
+ (max) number of variables
+ nv <- ncol(Boston) - 1
+ best subset selection by k-fold cross-validation
+ we perform model selection on the training data, as with ridge/lasso. So we
+ leave the test data for the final comparison between the different methods.
+ This can be developed into a nested CV.
+
+  set.seed(1)
+  k <- 5 # try also 10
+  n_obs_train <- nrow(data_train)
+  folds <- sample(1:k, n_obs_train, replace = TRUE)
+  cv.errors <- matrix(NA, k, nv)
+  
+  for (j in 1:k) {
+  best.fit <- regsubsets(crim ~ ., data = data_train[folds != j, ], nvmax = nv)
+  for (i in 1:nv) {
+  pred <- predict(best.fit, data_train[folds == j, ], id = i)
+  cv.errors[j, i] <- mean((data_train$crim[folds == j] - pred)^2)
+  }}
+  mse.cv <- apply(cv.errors, MARGIN = 2, FUN = mean)
+  rmse.cv <- sqrt(mse.cv)
+
+
+> # Ridge and Lasso
+
+The functions are *glmnet* and *cv.glmnet* inside the library **glmnet**.
+- They both require not the formula but just the train and test, a parameter *alpha* which 0=Ridge, 1=Lasso and *lambda* which is a vector of lambads (By default the glmnet() function performs ridge regression for an automatically selected range of $\lambda$ values) --> *glmnet(train, test, alpha, lambda)*
+- They also require to *transform the dataframe into a matrix*!: We use model.matrix() instead of just slicing df because it automatically transforms any qualitative variables into dummy variables. The latter property is important because glmnet() can only take numerical, quantitative inputs.
+- Since are scale sensitive by default, the glmnet() function standardizes the variables so that they are on the same scale.
+
+```{r}
+library(glmnet)
+set.seed(42)
+df <- na.omit(Hitters)
+x <- model.matrix(Salary ~ ., data=df)[, -1] #remove the intercept
+y <- df$Salary
+colnames(x) # the categorical variable are turned into dummy variable!
+grid <- 10^seq(4, -2, length = 100)
+mod_ridge <- glmnet(x, y, alpha = 0, lambda = grid)
+```
+
+```{r}
+plot(mod_ridge)
+```
+ 
+It would be better to use cross-validation to choose the tuning parameter $\lambda$. We can do this using the built-in cross-validation function, cv.glmnet(). By default, the function performs 10-fold cross-validation, though this can be changed using the argument folds. Note that we always need to set a random seed first so our results will be reproducible.
+
+- Extract the best lambda *cv_ridge$lambda.min*
+
+```{r}
+cv_ridge <- cv.glmnet(x, y, alpha = 0, lambda = grid)
+lambda_min<-cv_ridge$lambda.min
+lambda_min
+```
+
+We can also plot the MSE as a function of Lambda (only with cv.glmnet)
+
+```{r}
+plot(cv_ridge)
+```
+
+the vertical lines indicate $\lambda$min, the one which minimizes MSE in CV, and $\lambda$ 1se, the largest value within 1 standard error of $\lambda$ min, which could be a more conservative choice - this is however context-dependent. on the top we have the number of variable used (since we are working with ridge none of the will become zero so we will use all of them)
+
+- We can now examine the coefficients, using predict and specifying *type = 'coefficients'* with the lambda that minimize the cross validation error!
+
+```{r}
+out <- glmnet(x, y, alpha=0)
+predict(out, type="coefficients", s=lambda_min)
+```
+
+instead if we want to predict new observation:
+
+```{r}
+pred_lasso <- predict(cv_ridge, s = grid, newx = x[1:2,])
+```
+
+> - For lasso regression the same but with *alpha = 1*
+
+Both procedures perform very well and lead to the true model. The estimates are less accurate (shrinked)
+for lasso. It is generally regarded as good practice to use lasso only for variable selection, i.e. identify the
+predictors with non-zero coefficients, and to then refit the model by least squares just using the selected
+predictors. This typically leads to more accurate estimates than the lasso ones
+
+
+> #  Trees
+
+function *tree* inside the library **tree**!
+- The categorical y must be encoded as FACTOR!
+- The argument are: *tree(formula, data, split="deviance")*, if we want gini criterion, split='gini'.
+
+```{r}
+library(tree)
+x <- Carseats
+x$High <- ifelse(x$Sales<=8, "No", "Yes")
+x$High <- factor(x$High)
+tree.carseats <- tree(High ~ . -Sales, data=x,method = "recursive.partition",
+     split = "deviance")
+summary(tree.carseats)
+```
+
+The training error (“misclassification error rate”) is 9%. The “residual mean deviance” is the deviance (170.7) divided by n-|T0| (number of observations minus number of terminal nodes), which is 400-27=373. The *deviance is equivalent to the entropy*.
+
+We can examine the whole tree by displaying it in text mode:
+
+```{r}
+tree.carseats
+```
+
+For each node, R displays the split criterion, the number of observations in the branch, the deviance, the overall branch prediction, and class probabilities. the prediction are made specifying *type ="class"*.
+
+Maybe pruning the tree can have beneficial effects on its performance: we evaluate this using a cross-validation approach with the function *cv.tree() and the argument FUN=prune.misclass*, meaning that the number of misclassifications has to guide the CV and pruning process. The default is using FUN=prune.tree, which bases the pruning process on the deviance (entropy) and is the only possible choice for regression trees.
+
+- *FUN=prune.misclass* is the function to perform.
+- *K* is the k-fold cross-validation
+- *k* is the vector of alpha (tuning parameter that penalize the number of terminal nodes)
+
+```{r}
+set.seed(8)
+cv.carseats <- cv.tree(object=tree.carseats, FUN=prune.misclass, K=4)#K number of folder -> LOOCV
+cv.carseats
+```
+
+
+- *size* is the number of terminal nodes of each tree;
+- *dev* is the corresponding cross-validation error rate (also called “development” set error rate, hence the abbreviated name);
+- *k* is the corresponding value of the cost-complexity parameter
+
+Now that we found the optimal number of terminal nodes, we can use the prune.misclass() function to obtain the pruned tree:
+
+```{r}
+opt.size <- cv.carseats$size[which.min(cv.carseats$dev)]
+prune.carseats <- prune.misclass(tree.carseats, best=opt.size)
+plot(prune.carseats) # plot the tree...
+text(prune.carseats, pretty=1) #... and add node labels
+```
+
+> #  Bagging and Random Forests
+
+function *randomForest* library **randomForest**:
+
+Bagging is a particular case of random forest, where all predictors are used in each split (m=p): we can thus use the same randomForest() function to perform bagging and random forests, choosing the appropriate value for the mtry argument. 
+- We use the option *importance=TRUE* to assess the importance of predictors.
+- *mtry* = predictor to use for each tree
+- *ntree* = number of tree to use
+
+```{r}
+library(randomForest)
+library(MASS)
+train <- sample(1:nrow(Boston), nrow(Boston)/2)
+x.test <- Boston[-train, ]
+y.test <- x.test$medv
+n_pred <- ncol(Boston) - 1
+
+bag.boston <- randomForest(medv ~ ., data=Boston, subset=train, 
+                           mtry=n_pred, #mtry = predictors -> Bagging
+                           importance=TRUE,
+                           ntree=500)
+bag.boston
+```
+
+We can grow a more general random forest by using *smaller values of the mtry argument*. The randomForest() defaults are to use p/3 variables when building a forest of regression trees and sqrt(p) for classification trees. In the following example, we use mtry=6 (p/2).
+
+We can *check out how important each predictor* is by using the importance() function:
+
+```{r}
+(importance(bag.boston))
+```
+
+The first column is the mean decrease in accuracy of the predictions when that variable is removed from the model (lower is better) The second column is a measure of the total decrease in node impurity (higher is better) resulting from splits over that variable (averaged over all of the trees).
+
+To neatly plot these importance measures we use the varImpPlot() function:
+
+```{r}
+varImpPlot(bag.boston)
+```
+
+
+> #  Boosting
+
+function *gbm* library **gbm** which stand for Generalized Boosted Regression Modeling.
+- The regression task requires that we use the option *distribution="gaussian"*;
+- if we are dealing with a binary classification task, we would use *distribution="bernoulli"*.	
+- *interaction.depth* is an integer specifying the maximum depth of each tree.
+- *shrinkage* is the learning rate!!
+- *n.tree* is the number of trees to use.
+
+```{r}
+library(gbm)
+set.seed(42)
+boosted <- gbm(medv ~ ., data=Boston[train, ], distribution="gaussian",
+               n.trees=5000, interaction.depth=4, shrinkage=0.001) 
+knitr::kable(summary(boosted))
+```
+
+We can evaluate the marginal effect of thee highest variable by producing a partial dependence plot.
+
+```{r}
+plot(boosted, i="lstat")
+```
+Intuitively, median house prices decrease with 'lstat' (remember that higher lstat represents lower socio-economic status).
+
+> ## Support Vector Machine - linearly separable
+
+function *svm* library **e1071**!
+
+```{r}
+set.seed(42)
+x <- matrix(rnorm(40*2), ncol=2) 
+y <- c(rep(-1,10), rep(1,10))
+x[y==1, ] <- x[y==1, ] + 1
+dat <- data.frame(x=x, y=as.factor(y))
+```
+
+SVM function requires:
+- *formula* of the model to perform.
+- *kernel* which can be equal to 'linear', 'polynomial', 'radial'
+- *degree* and *gamma* if use kernel poly or radial
+- *scale* which standardise the data
+- *cost* which is the misclassification cost: the smaller, the wider the margins. The cost value is inversely proportional to the C value that was used at lectures.
+
+```{r}
+library(e1071)
+svmfit <- svm(y ~ ., data=dat, kernel="linear", cost=100, scale=T)
+plot(svmfit, dat) #must pass again the dataset
+
+```
+
+to check all the information:
+
+```{r}
+summary(svmfit)
+```
+The cryptic “( 15 14 )” underneath the number of support vectors means that 15 of them are in class 1 and 14 in the other class.
+
+An optimal value for the cost parameter can be found by trying different values in a cross-validation setting. This is what is done by the *tune()* function, which by default performs 10-fold CV:
+- *model* in this case SVM!
+- *formula*
+- *data*
+- *kernel*
+- *ranges* of possible cost!!
+
+```{r}
+set.seed(1)
+tune.out <- tune(svm, y ~ ., data=dat, kernel="linear", 
+                 ranges=list(cost=c(0.001, 0.01, 0.1, 1, 5, 10, 100)))
+
+tune.summary <- summary(tune.out)
+best <- tune.out$best.model
+summary(best)
+```
+
+
+> ## Support Vector Machine - non linearly separable
+
+```{r}
+set.seed(42)
+x <- matrix(rnorm(200*2), ncol=2)
+x[1:100, ] <- x[1:100, ] + 2
+x[101:150, ] <- x[101:150, ] - 2
+y <- c(rep(1, 150), rep(-1, 50))
+dat <- data.frame(x=x, y=as.factor(y))
+```
+as before with *tune* we can safely perform more operation and check which parameter performs better:
+
+```{r}
+set.seed(1)
+tune.out <- tune(svm, y ~ ., data=dat[train, ], kernel="radial", 
+                 ranges=list(cost=c(0.1, 1, 10, 100, 1000), 
+                             gamma=c(0.5, 1, 2, 3, 4))) #degree if polynomial!
+opt.gamma <- tune.out$best.parameters$gamma
+opt.cost <- tune.out$best.parameters$cost
+print(paste(c("optimal gamma:", opt.gamma, "optimal cost:", opt.cost)))
+```
+
+
+We can perform the ROC curves from the SVM function, we have to set the parameter *decision.values* = TRUE!
+
+```{r}
+svmfit.opt <- svm(y ~ ., data=dat[train, ], kernel="radial", gamma=opt.gamma, cost=opt.cost, decision.values=TRUE)
+yattr.opt <- predict(svmfit.opt, dat[train, ], decision.values=TRUE)
+fitted.opt <- attributes(yattr.opt)$decision.values
+```
+
+Multiclass SVM: The svm() function will perform automatically multi-class classification when the response factor contains more than 2 levels. The approach for multi-class classification is the **“one-versus-one”**.
+
+> #PCA
+
+First with vanilla R:
+
+```{r}
+dataf <- USArrests
+rownames(dataf) <- seq(1:nrow(dataf))
+pr.out <- prcomp(dataf, scale=TRUE)
+names(pr.out)
+```
+
+The “center” and “scale” components are the means and standard deviations of the original variables and are used by the scaling function. 
+- *rotation* component is the matrix of the principal component loadings and it has as many columns as the number of distinct components, it correspond to the U matrix in the lecture.
+- the principal component *scores* - which are conveniently available in the pr.out$x component, nxp matrix of the scores.
+
+```{r}
+biplot(pr.out, scale=0, cex=0.5)
+```
+The variance explained by the components:
+
+```{r}
+pr.out$sdev
+```
+
+Using *PCA* of library **FactoMinerR** and **factoextra**
+
+```{r}
+library("FactoMineR")
+library("factoextra")
+res.pca <- PCA(dataf, graph=FALSE)
+names(res.pca)
+```
+The res.pca$eig object contains the eigenvalues (the variances) of the principal components (column 1), the percentage of variance (column 2), and the cumulative percentage of variance.
+
+```{r}
+res.pca$eig
+```
+We can also perform scree plot with *fviz_eig*
+
+```{r}
+fviz_eig(res.pca, addlabels=TRUE, ylim=c(0, 100))
+fviz_pca_biplot(res.pca)
+```
+
+You probably notice that a PCA biplot simply merge an usual PCA plot with a plot of loadings. The arrangement is like this:
+-Bottom axis: PC1 score.
+-Left axis: PC2 score.
+-Top axis: loadings on PC1.
+-Right axis: loadings on PC2.
+
+In other words, the left and bottom axes are of the PCA plot — use them to read PCA scores of the samples (dots). 
+
+- A loading plot shows how strongly each characteristic influences a principal component.
+The top and right axes belong to the loading plot — use them to read how strongly each characteristic (vector) influence the principal components. Another nice thing about loading plots: the angles between the vectors tell us how characteristics correlate with one another.When two vectors are close, forming a small angle, the two variables they represent are positively correlated.If they meet each other at 90°, they are not likely to be correlated. When they diverge and form a large angle (close to 180°), they are negative correlated. 
+
+```{r}
+fviz_screeplot(res.pca)
+```
+
+> # K-MEANS clustering
+
+```{r}
+set.seed(2)
+x <- matrix(rnorm(50*2), ncol=2)
+x[1:25, 1] <- x[1:25, 1] + 3
+x[1:25, 2] <- x[1:25, 2] - 4 
+```
+
+Function *kmeans* inside vanilla R:
+- *x* data
+- *centers* number of cluster
+- *nstart* since the algorithm will not reach a global optimum it will perform the operation multiple time with different initial assignment!
+
+```{r}
+km.out <- kmeans(x, centers=5, nstart=20)
+km.out$cluster
+```
+
+We can access the with-in and between distances as :
+
+```{r}
+print(km.out$withinss)
+print(km.out$betweenss)
+```
+
+We can nicely plot:
+
+```{r}
+fviz_cluster(km.out, data=x, 
+             palette="jco", # this loads one of the many predefined palettes
+             xlab="",
+             ylab="")
+```
+
+> # Hierarchical clustering
+
+function *hclust*:
+- *d* dissimilarity matrix! as dist(dataframe)
+- *method* which could be complete,  centroid, average, single etc.
+
+It is generally a good idea to scale the variables beforehand:
+
+```{r}
+x <- scale(x)
+dist.matrix <- dist(x) # by default Euclidean distance is computed
+
+hc.complete <- hclust(dist.matrix, method="complete")
+hc.average <- hclust(dist.matrix, method="average")
+hc.single <- hclust(dist.matrix, method="single")
+fviz_dend(hc.complete, k=3, show_labels = F)
+```
+
+We can cut the dendogram:
+
+```{r}
+cutted <- cutree(hc.complete, 2)
+cutted
+```
+
+A quantitative way to compare our groupings with a ground truth is the Adjusted Rand Index (ARI), which in R is implemented in the function *mclust::adjustedRandIndex(x, y)*.
+
+```{r}
+truth <- c(rep("Group1", 25), rep("Group2", 25))
+mclust::adjustedRandIndex(truth, cutted)
+```
+
+the package **factoextra** is a helpfull tool to see what is the right number of cluster:
+
+```{r}
+fviz_nbclust(x, FUNcluster=kmeans, method="gap_stat")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

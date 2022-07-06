@@ -2,7 +2,7 @@
 layout: post
 title:  "MLOPS"
 description: MLOPS, all the best practice for design, train and deploy a ML system.
-img: mlops__.png
+img: preview/mlops__.png
 author: GGabry
 ---
 

@@ -2,7 +2,7 @@
 layout: post
 title:  "Basics Classification Models"
 description: Classification models and analysis developed in R studio.
-img: class.png
+img: preview/class.png
 author: GGabry
 ---
 

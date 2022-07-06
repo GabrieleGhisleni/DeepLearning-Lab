@@ -2,7 +2,7 @@
 layout: post
 title:  "Shrinkage and non-linear models"
 description: Shrinkage methods and non-linear models and analysis developed in R studio.
-img: non_linear.jpg
+img: preview/non_linear.jpg
 author: GGabry
 ---
 

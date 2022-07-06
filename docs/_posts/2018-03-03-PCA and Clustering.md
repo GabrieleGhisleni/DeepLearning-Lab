@@ -2,7 +2,7 @@
 layout: post
 title:  "Principal Component and Cluster Analysis"
 description: Principal Component and Cluster Analysis developed in R studio.
-img: dim.png
+img: preview/dim.png
 author: GGabry
 ---
 
